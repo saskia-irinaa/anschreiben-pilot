@@ -48,13 +48,14 @@ export function EditPopover({ setTooltip, selectedText, user, ...props }: EditPo
         }
         return lnPayment;
       }
+      return null;
     } catch (error) {
       console.error('Error processing payment, please try again');
       return null;
     }
   }
 
-  const replaceSelectedText = async ({ improvement, lnPayment }: { improvement: string, lnPayment: LnPayment }) => {
+  const replaceSelectedText = async ({ improvement, lnPayment }: { improvement: string, lnPayment?: LnPayment }) => {
     const selection = window.getSelection();
     let loadingInterval;
 
@@ -112,7 +113,8 @@ export function EditPopover({ setTooltip, selectedText, user, ...props }: EditPo
         onPayOpen();
       }
       try {
-        lnPayment = await checkIfLnAndPay(user);
+        const result = await checkIfLnAndPay(user);
+        lnPayment = result ?? undefined;
       } catch (error) {
         console.error('error paying with ln: ', error);
       }

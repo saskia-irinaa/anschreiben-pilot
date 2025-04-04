@@ -220,33 +220,34 @@ export const updateLnPayment: UpdateLnPayment<LightningInvoice, LnPayment> = asy
   return updatedInvoice;
 };
 
-const getBitcoinPrice = async () => {
-  let response = null;
+interface CoinMarketCapResponse {
+  data: {
+    data: {
+      quote: {
+        USD: {
+          price: number
+        }
+      }
+    }[]
+  }
+}
 
+const getBitcoinPrice = async () => {
   try {
-    response = await axios.get('https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest', {
-      headers: {
-        'X-CMC_PRO_API_KEY': process.env.COINMARKETCAP_API_KEY!,
-      },
-    });
+    const response = await axios.get<CoinMarketCapResponse>(
+      'https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest',
+      {
+        headers: {
+          'X-CMC_PRO_API_KEY': process.env.COINMARKETCAP_API_KEY!,
+        },
+      }
+    );
+    return response.data.data.data[0].quote.USD.price;
   } catch (error: any) {
     console.log('error calling coinmarket cap api: ', error.message);
     return null;
   }
-  if (response) {
-    const json = response.data.data[0].quote.USD.price;
-    console.log(json);
-    return json;
-  }
 };
-
-// export const centsToMilliSats = async (cents: number) => {
-//   const bitcoinPrice = await getBitcoinPrice();
-//   if (bitcoinPrice === null) return null;
-
-//   const milliSatsPerDollar = 100000000000 / bitcoinPrice;
-//   return cents * milliSatsPerDollar;
-// };
 
 export const milliSatsToCents: MilliSatsToCents<{ milliSats: number }, number> = async ({ milliSats }, _context) => {
   const bitcoinPrice = await getBitcoinPrice();

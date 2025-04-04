@@ -2,6 +2,8 @@
   "name": "coverlettergpt",
   "type": "module",
   "dependencies": {
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.26.2",
     "@chakra-ui/react": "2.8.0",
     "@emotion/react": "11.10.6",
     "@emotion/styled": "11.10.6",
