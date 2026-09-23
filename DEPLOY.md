@@ -13,49 +13,39 @@ Three files are prepared in this repo root for that:
   managed Postgres database, wired together.
 - This file.
 
-**None of this has been deployed or tested against a real Render account** - this
-session has no Render access. Read the "Known gap" section below before clicking
-anything; it is a real blocker, not a formality.
+**Fixed 2026-09-23.** The `Dockerfile` now builds `.wasp/build` itself, inside Docker,
+as its own first stage — Render (or anyone) can build straight from the repo as pushed,
+no pre-build step needed. What changed and how it was checked, for the record:
 
-## Known gap: the Dockerfile needs `.wasp/build` as its context, not the repo root
+`wasp dockerfile` originally printed the Dockerfile that `wasp build` writes to
+`.wasp/build/Dockerfile`, meant to be built with `.wasp/build` itself as the context
+(that's where `wasp build` also puts `server/`, `sdk/`, `db/`, and copies of `src/`).
+`.wasp/` is gitignored and doesn't exist in the repo as pushed — so a plain Render
+Blueprint build would have failed immediately at `COPY server .wasp/build/server`.
 
-`wasp dockerfile` prints the Dockerfile that `wasp build` normally writes to
-`.wasp/build/Dockerfile`, meant to be built with `.wasp/build` itself as the Docker
-build context (that's where `wasp build` also puts `server/`, `sdk/`, `db/`, and
-copies `src/`). `.wasp/` is gitignored and does not exist in this repo as pushed to
-GitHub.
+The fix: a new first stage (`wasp-build`) in `Dockerfile` installs Wasp 0.15.0 (pinned
+to match `main.wasp`'s `wasp: { version: "^0.15.0" }` — if that version ever changes,
+this stage needs to change with it) and runs `wasp build` itself, producing
+`.wasp/build/` and `.wasp/out/sdk` inside the image build. The rest of the file is
+Wasp's own generated Dockerfile, unedited except that every `COPY` now pulls from that
+`wasp-build` stage (`COPY --from=wasp-build ...`) instead of expecting the paths to
+already exist in the build context.
 
-Render's Blueprint Docker service builds straight from your GitHub repo with no
-build step of its own - so `COPY server .wasp/build/server` (and the other COPY
-lines) will fail immediately, because none of those paths exist at the repo root.
+**Verified without a live `docker build`** (no Docker available in this environment):
+ran `wasp build` locally with the pinned CLI and confirmed every path the new stage
+copies from — `.wasp/build/server`, `.wasp/build/db/schema.prisma`, `.wasp/out/sdk`,
+`src/`, `package.json`, `package-lock.json` — actually exists after a real build, byte
+for byte where it mattered (`.wasp/out/sdk` and `.wasp/build/sdk` diffed identical).
+**Still not verified: an actual `docker build` run.** The Dockerfile mechanics
+(multi-stage, `COPY --from`) are standard and the paths are confirmed real, but nobody
+has watched this specific build finish end to end. Do that once, watching the logs,
+before trusting it for a real deploy.
 
-This is unresolved. Two ways to close it, in order of how much Saskia should trust
-them:
+## Step by step
 
-1. **CI builds the image, Render deploys the image** (recommended). Add a GitHub
-   Action that on push: installs Wasp 0.15.0, runs `wasp build`, then `docker build`
-   from `.wasp/build` (using the Dockerfile that's already there, byte-identical to
-   the one committed here), pushes the image to a registry (Docker Hub or Render's
-   own registry), and calls Render's deploy-image API or a Deploy Hook. Change the
-   server service in `render.yaml` from a `dockerfilePath`-based build to an
-   `image:` reference once this exists. Not written yet - needs its own PR.
-2. **Manual local build as a stopgap**: `wasp build && cd .wasp/build && docker build
-   -t anschreiben-pilot-server .`, then push that image to a registry by hand and
-   point a Render "Existing Image" web service at it. Works today, but means every
-   deploy is a manual step on her Mac.
-
-Either way, **do not expect `render.yaml`'s server service to build successfully by
-just connecting the repo and clicking Deploy.** The client (static site) service
-does not have this problem, because Render Static Site builds run an arbitrary shell
-`buildCommand` (not a Dockerfile), so it can install Wasp itself and run `wasp build`
-inline - see `render.yaml`.
-
-## Step by step, once the gap above is closed
-
-1. **Push this branch's work to GitHub.** The repo needs to exist on GitHub for
-   Render to connect to it (per Saskia's own "ship into a GitHub repo" habit).
-2. **In Render: New > Blueprint.** Connect the GitHub repo, branch `feature/render-deploy`
-   (or `main` once merged). Render reads `render.yaml` and proposes: a Postgres
+1. **This is already on GitHub and merged to `main`** (`saskia-irinaa/anschreiben-pilot`).
+2. **In Render: New > Blueprint.** Connect the GitHub repo, branch `main`. Render reads
+   `render.yaml` and proposes: a Postgres
    database (`anschreiben-pilot-db`), a web service (`anschreiben-pilot-server`), and
    a static site (`anschreiben-pilot-client`).
 3. **Fill in the server's env vars** (all marked `sync: false` in `render.yaml`, so
