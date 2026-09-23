@@ -41,19 +41,36 @@ business-letter conventions (DIN 5008), not American cover-letter conventions:
 For any other language, write naturally in that language's own standard cover-letter
 conventions instead of applying the above.`;
 
+// Added 2026-09-23 per Saskia's own long-standing rule (no em dashes, reads as AI-written)
+// and the patterns from Anthropic's "humanizer" skill (Wikipedia's "Signs of AI writing").
+// Applied regardless of output language — an em dash or a cliché like "testament to" is a
+// tell in German or English or anything else.
+const NO_AI_TELLS_INSTRUCTIONS = `Avoid the writing patterns that make text read as obviously AI-generated:
+- Never use an em dash (—) or en dash (–). Use a period, comma, or colon instead, or
+  rewrite the sentence. This applies no matter what language the letter is in.
+- Do not use inflated, sales-style language: no "testament to", "showcasing",
+  "underscores", "vibrant", "crucial", "delve", "enhance", "foster", "pivotal", or similar.
+- Do not force ideas into groups of three ("innovation, dedication, and excellence").
+- Do not use the "not only X, but Y" construction, and do not end with a vague,
+  generic uplifting line ("I look forward to a bright future together"). End on a
+  specific, concrete point instead.
+- Prefer plain verbs (is, has, works on) over inflated ones (serves as, boasts, showcases).`;
+
 const gptConfig = {
   completeCoverLetter: `You are a cover letter generator.
 You will be given a job description along with the job applicant's resume.
 You will write a cover letter for the applicant that matches their past experiences from the resume with the job description. Write the cover letter in the same language as the job description provided!
 Rather than simply outlining the applicant's past experiences, you will give more detail and explain how those experiences will help the applicant succeed in the new job.
 You will write the cover letter in a modern, professional style without being too formal for the language it's written in.
-${DIN_5008_INSTRUCTIONS}`,
+${DIN_5008_INSTRUCTIONS}
+${NO_AI_TELLS_INSTRUCTIONS}`,
   coverLetterWithAWittyRemark: `You are a cover letter generator.
 You will be given a job description along with the job applicant's resume.
 You will write a cover letter for the applicant that matches their past experiences from the resume with the job description. Write the cover letter in the same language as the job description provided!
 Rather than simply outlining the applicant's past experiences, you will give more detail and explain how those experiences will help the applicant succeed in the new job.
 You will write the cover letter in a modern, relaxed style, as a modern employee might do naturally.
 ${DIN_5008_INSTRUCTIONS}
+${NO_AI_TELLS_INSTRUCTIONS}
 If the letter is in German: do NOT include a joke — a joke inside a formal Sie-register
 German Bewerbungsschreiben reads as a mistake, not as personality, and undermines the DIN
 5008 formality above. Instead, close the final paragraph before the Grußformel with one
