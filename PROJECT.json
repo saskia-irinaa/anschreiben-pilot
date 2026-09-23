@@ -4,14 +4,14 @@
   "productLine": "micro-saas-dach",
   "state": "doing",
   "open": [
-    "Translate remaining pages to German: JobsPage, ProfilePage, CheckoutPage, CoverLetterPage, legal pages (Tos/Privacy) — MainPage, NavBar, LoginPage done",
-    "Decide: remove Lightning/Bitcoin sign-in + payment entirely (vince's personal Alby setup, touches schema.prisma LnData/LnPayment + several files) or keep it — text translated either way, not removed yet",
+    "Translate remaining pages to German: JobsPage, CheckoutPage, CoverLetterPage, legal pages (Tos/Privacy) — MainPage, NavBar, LoginPage, ProfilePage, Popover, AlertDialog done",
+    "Domain name still not decided — anschreibenpilot.de/.com are free and reserved as the working choice, but Saskia said she wants something more creative; not registered yet",
     "Build the Bewerbungsmappe PDF-merger as a free standalone hook tool (not started)",
     "Set up Render deployment (Docker, per Wasp's generated Dockerfile) instead of Fly.io/Railway (not started)",
-    "Register anschreibenpilot.de (+ .com) — Saskia's call, still open on the name itself",
-    "Set up Stripe/Polar for DACH pricing before any real launch (still uses vince's original US Stripe product IDs)",
+    "Set up Stripe/Polar for DACH pricing before any real launch (still uses vince's original US Stripe product IDs and USD pricing)",
     "Privacy policy needs real legal review before handling real user data (GDPR) — not drafted",
-    "No local dev environment tested yet (needs Docker for Postgres + an OpenAI key) — DIN 5008 prompt change is unverified against a real API call"
+    "No live Postgres tested yet (needs Docker or a hosted DB + an OpenAI key) — compiled clean and the Lightning-removal migration is verified against Prisma's own diff engine, but the running app itself (wasp start) has not been exercised end to end",
+    "DIN 5008 prompt change is unverified against a real OpenAI API call — no key configured in this environment"
   ],
   "parked": []
 }
