@@ -5,14 +5,14 @@ export function convertToSliderValue(value: number): number {
 
 export function convertToSliderLabel(value: number): string {
   if (value < 17) {
-    return 'most standard';
+    return 'am neutralsten';
   } else if (value < 35) {
-    return 'a bit creative';
+    return 'etwas kreativ';
   } else if (value < 55) {
-    return 'more creative';
+    return 'kreativer';
   } else if (value < 69) {
-    return 'most creative';
+    return 'sehr kreativ';
   } else {
-    return 'dangerously creative';
+    return 'gewagt kreativ';
   }
 }

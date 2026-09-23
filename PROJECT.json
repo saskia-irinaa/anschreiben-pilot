@@ -4,7 +4,7 @@
   "productLine": "micro-saas-dach",
   "state": "doing",
   "open": [
-    "Translate remaining pages to German: JobsPage, CheckoutPage, CoverLetterPage, legal pages (Tos/Privacy) — MainPage, NavBar, LoginPage, ProfilePage, Popover, AlertDialog done",
+    "UI translation to German is done across the app (JobsPage, CheckoutPage, CoverLetterPage, Modal/DescriptionModal/CallToAction/CreativitySlider, plus the earlier MainPage/NavBar/LoginPage/ProfilePage/Popover/AlertDialog). TosPage and PrivacyPolicyPage chrome (heading, \"last updated\") is translated, but their legal body text is real Impressum/AGB/Datenschutz boilerplate, deliberately left in English with a TODO comment — needs an actual lawyer, not a translation pass.",
     "Domain name still not decided — anschreibenpilot.de/.com are free and reserved as the working choice, but Saskia said she wants something more creative; not registered yet",
     "Set up Render deployment (Docker, per Wasp's generated Dockerfile) instead of Fly.io/Railway (not started)",
     "Set up Stripe/Polar for DACH pricing before any real launch (still uses vince's original US Stripe product IDs and USD pricing)",

@@ -9,6 +9,9 @@ import {
   ListItem,
 } from '@chakra-ui/react';
 
+// TODO: needs real German legal text, lawyer review — this page's legal body content
+// (data controller info, GDPR rights, retention, third parties, etc.) is a genuine legal
+// template, not placeholder copy, and must not be machine-translated as if final.
 const PrivacyPolicy = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -17,8 +20,8 @@ const PrivacyPolicy = () => {
   return (
     <BorderBox>
       <VStack maxW='4xl' mx='auto' p={6} spacing={6} align='flex-start'>
-        <Heading as='h1' size='xl' mb={6}>Privacy Policy</Heading>
-        <Text fontSize='sm' color='gray.600' mb={6}>Last updated: {new Date().toLocaleDateString()}</Text>
+        <Heading as='h1' size='xl' mb={6}>Datenschutzerklärung</Heading>
+        <Text fontSize='sm' color='gray.600' mb={6}>Zuletzt aktualisiert: {new Date().toLocaleDateString()}</Text>
 
         <LegalSection title='1. Introduction'>
           <Text>

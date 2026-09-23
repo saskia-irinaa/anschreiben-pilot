@@ -15,7 +15,7 @@ export default function CoverLetterPage() {
 
   const { id } = useParams();
   if (!id) {
-    return <BorderBox>Error: Cover letter ID is required</BorderBox>;
+    return <BorderBox>Fehler: Anschreiben-ID erforderlich</BorderBox>;
   }
 
   const {
@@ -41,7 +41,7 @@ export default function CoverLetterPage() {
     try {
       setEditIsLoading(true);
       if (!id) {
-        throw new Error('Cover letter ID is required');
+        throw new Error('Anschreiben-ID erforderlich');
       }
 
       const editedCoverLetter = await editCoverLetter({ coverLetterId: id, content: textareaState });
@@ -54,7 +54,7 @@ export default function CoverLetterPage() {
       }
     } catch (error) {
       console.error(error);
-      alert('An error occured. Please try again.');
+      alert('Ein Fehler ist aufgetreten. Bitte versuche es erneut.');
     }
     setEditIsLoading(false);
   };
@@ -82,7 +82,7 @@ export default function CoverLetterPage() {
         {coverLetter && (
           <HStack>
             <Tooltip
-              label={isEdited && 'Changes Saved!'}
+              label={isEdited && 'Änderungen gespeichert!'}
               placement='top'
               hasArrow
               isOpen={isEdited}
@@ -90,17 +90,17 @@ export default function CoverLetterPage() {
               closeOnClick={true}
             >
               <Button size='sm' mr={3} onClick={handleClick} isDisabled={false} isLoading={editIsLoading}>
-                Save Changes
+                Änderungen speichern
               </Button>
             </Tooltip>
             <Tooltip
-              label={hasCopied ? 'Copied!' : 'Copy Letter to Clipboard'}
+              label={hasCopied ? 'Kopiert!' : 'Anschreiben in Zwischenablage kopieren'}
               placement='top'
               hasArrow
               closeOnClick={false}
             >
               <Button colorScheme='purple' size='sm' mr={3} onClick={onCopy}>
-                Copy
+                Kopieren
               </Button>
             </Tooltip>
           </HStack>

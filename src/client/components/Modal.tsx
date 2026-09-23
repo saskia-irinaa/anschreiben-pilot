@@ -50,12 +50,12 @@ export default function ModalElement({ coverLetterData, isOpen, onOpen, onClose 
     <Modal isOpen={isOpen} onClose={onClose} initialFocusRef={copyButtonRef}>
       <ModalOverlay backdropFilter='auto' backdropInvert='15%' backdropBlur='2px' />
       <ModalContent maxH='2xl' maxW='2xl' bgColor='bg-modal'>
-        <ModalHeader>Your Cover Letter{coverLetterData.length > 1 && 's'}</ModalHeader>
+        <ModalHeader>Dein Anschreiben{coverLetterData.length > 1 && 'n'}</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
           {coverLetterData.length > 1 && (
             <Select
-              placeholder='Select Cover Letter'
+              placeholder='Anschreiben auswählen'
               defaultValue={selectedCoverLetter.id}
               onChange={handleSelectChange}
             >
@@ -83,13 +83,13 @@ export default function ModalElement({ coverLetterData, isOpen, onOpen, onClose 
 
         <ModalFooter>
           <Tooltip
-            label={hasCopied ? 'Copied!' : 'Copy Letter to Clipboard'}
+            label={hasCopied ? 'Kopiert!' : 'Anschreiben in Zwischenablage kopieren'}
             placement='top'
             hasArrow
             closeOnClick={false}
           >
             <Button ref={copyButtonRef} colorScheme='purple' size='sm' mr={3} onClick={onCopy}>
-              Copy
+              Kopieren
             </Button>
           </Tooltip>
           <Button
@@ -100,7 +100,7 @@ export default function ModalElement({ coverLetterData, isOpen, onOpen, onClose 
             mr={3}
             onClick={() => navigate(`/cover-letter/${selectedCoverLetter.id}`)}
           >
-            Edit
+            Bearbeiten
           </Button>
         </ModalFooter>
       </ModalContent>

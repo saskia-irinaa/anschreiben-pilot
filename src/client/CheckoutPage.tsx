@@ -10,13 +10,13 @@ type PaymentStatus = 'paid' | 'canceled' | 'error' | 'loading';
 const getHeadingText = (status: PaymentStatus): string => {
   switch (status) {
     case 'paid':
-      return 'Payment Successful!';
+      return 'Zahlung erfolgreich!';
     case 'canceled':
-      return 'Payment Canceled';
+      return 'Zahlung abgebrochen';
     case 'error':
-      return 'Payment Error';
+      return 'Zahlungsfehler';
     default:
-      return 'loading';
+      return 'Lädt...';
   }
 };
 
@@ -58,7 +58,7 @@ export default function CheckoutPage({ user }: { user: User }) {
       <Heading>{getHeadingText(hasPaid)}</Heading>
 
       <Text textAlign='center'>
-        You are being redirected to your profile page... <br />
+        Du wirst zu deinem Profil weitergeleitet... <br />
       </Text>
     </BorderBox>
   );
