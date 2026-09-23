@@ -62,7 +62,7 @@ export default function ProfilePage({ user }: { user: User }) {
             <VStack gap={3} pt={5} alignItems='flex-start'>
               <Text textAlign='initial'>Vielen Dank für deine Unterstützung!</Text>
 
-              <Text textAlign='initial'>Du hast unbegrenzten Zugriff auf Anschreiben Pilot mit {user?.gptModel === 'gpt-4' || user?.gptModel === 'gpt-4o' ? 'GPT-4o.' : 'GPT-4o-mini.'}</Text>
+              <Text textAlign='initial'>Du hast Zugriff auf Anschreiben Pilot mit {user?.gptModel === 'gpt-4' || user?.gptModel === 'gpt-4o' ? 'GPT-4o.' : 'GPT-4o-mini.'}</Text>
 
               {userInfo.subscriptionStatus === 'canceled' && (
                 <Code alignSelf='center' fontSize='lg'>
@@ -112,8 +112,6 @@ export default function ProfilePage({ user }: { user: User }) {
                     <VStack gap={3} alignItems='start'>
                       <Heading size='xl'>6,95 €</Heading>
                       <Text textAlign='start' fontSize='md'>
-                        Unbegrenztes
-                        <br />
                         Monatsabo
                       </Text>
                       <Heading size='md'>Mit GPT-4o-mini 🚀</Heading>
@@ -127,7 +125,7 @@ export default function ProfilePage({ user }: { user: User }) {
                       <Heading size='xl'>6,95 €</Heading>
 
                       <Text textAlign='start' fontSize='md'>
-                        Unbegrenztes <br /> Monatsabo
+                        Monatsabo
                       </Text>
                       <Heading size='md'>Mit GPT-4o 🤖</Heading>
                     </VStack>

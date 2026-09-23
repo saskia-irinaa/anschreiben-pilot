@@ -139,9 +139,13 @@ async function checkIfUserPaid({ context }: { context: any }) {
 // wasn't defensible on the GPT-4o tier specifically: 20/hour sustained on gpt-4o would run
 // roughly EUR 120/month on ONE account, more than that account's own subscription covers.
 // An hourly-only cap also has a gap: hitting the limit every hour for 24h still adds up.
-// Two limits now, both must be respected:
+// A day-only cap has the same gap one level up: hitting 50/day every day for 30 days still
+// costs EUR 10-13 on the GPT-4o tier against a EUR 6,95 subscription. Added a monthly ceiling
+// 2026-09-23 to close that, and dropped the daily cap since a real job search does not
+// realistically need 50 letters in a single day. Three limits now, all must be respected:
 const MAX_AI_CALLS_PER_HOUR = 10;
-const MAX_AI_CALLS_PER_DAY = 50;
+const MAX_AI_CALLS_PER_DAY = 20;
+const MAX_AI_CALLS_PER_MONTH = 150;
 const aiCallLog = new Map<number, number[]>();
 
 function checkRateLimit({ context }: { context: any }) {
@@ -149,7 +153,8 @@ function checkRateLimit({ context }: { context: any }) {
   const now = Date.now();
   const oneHourAgo = now - 60 * 60 * 1000;
   const oneDayAgo = now - 24 * 60 * 60 * 1000;
-  const recent = (aiCallLog.get(userId) || []).filter((t) => t > oneDayAgo);
+  const oneMonthAgo = now - 30 * 24 * 60 * 60 * 1000;
+  const recent = (aiCallLog.get(userId) || []).filter((t) => t > oneMonthAgo);
 
   const inLastHour = recent.filter((t) => t > oneHourAgo).length;
   if (inLastHour >= MAX_AI_CALLS_PER_HOUR) {
@@ -158,10 +163,17 @@ function checkRateLimit({ context }: { context: any }) {
       `Zu viele Anfragen. Bitte warte etwas, bevor du es erneut versuchst (max. ${MAX_AI_CALLS_PER_HOUR} pro Stunde).`
     );
   }
-  if (recent.length >= MAX_AI_CALLS_PER_DAY) {
+  const inLastDay = recent.filter((t) => t > oneDayAgo).length;
+  if (inLastDay >= MAX_AI_CALLS_PER_DAY) {
     throw new HttpError(
       429,
       `Tageslimit erreicht (max. ${MAX_AI_CALLS_PER_DAY} pro Tag). Bitte versuche es morgen wieder.`
+    );
+  }
+  if (recent.length >= MAX_AI_CALLS_PER_MONTH) {
+    throw new HttpError(
+      429,
+      `Monatslimit erreicht (max. ${MAX_AI_CALLS_PER_MONTH} pro Monat). Bitte versuche es im nächsten Monat wieder.`
     );
   }
   recent.push(now);
