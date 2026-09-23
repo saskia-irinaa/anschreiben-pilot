@@ -1,17 +1,21 @@
 import BorderBox from '../components/BorderBox';
 import { useEffect } from 'react';
 import LegalSection from './components/legalSection';
-import { 
-  Heading, 
-  Text, 
+import {
+  Heading,
+  Text,
   VStack,
   UnorderedList,
   ListItem,
 } from '@chakra-ui/react';
 
-// TODO: needs real German legal text, lawyer review — this page's legal body content
-// (data controller info, GDPR rights, retention, third parties, etc.) is a genuine legal
-// template, not placeholder copy, and must not be machine-translated as if final.
+// TODO(Saskia): this is a real draft based on what the app actually does, not a
+// translated version of the template's placeholder text anymore — that text named a
+// different company's real name, home address and email (the original repo author's),
+// which had to be removed outright, not translated. Still needs, before this goes live:
+// 1. Fill in [PLATZHALTER] below with your real name/business name, address and email.
+// 2. An actual lawyer's review — this is a solid-faith draft, not legal advice.
+// 3. Re-check this page whenever a new third-party service or data flow is added.
 const PrivacyPolicy = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -21,228 +25,179 @@ const PrivacyPolicy = () => {
     <BorderBox>
       <VStack maxW='4xl' mx='auto' p={6} spacing={6} align='flex-start'>
         <Heading as='h1' size='xl' mb={6}>Datenschutzerklärung</Heading>
-        <Text fontSize='sm' color='gray.600' mb={6}>Zuletzt aktualisiert: {new Date().toLocaleDateString()}</Text>
+        <Text fontSize='sm' color='gray.600' mb={6}>Zuletzt aktualisiert: {new Date().toLocaleDateString('de-DE')}</Text>
 
-        <LegalSection title='1. Introduction'>
+        <LegalSection title='1. Verantwortlicher'>
           <Text>
-            Canger & Shahab Crimpin GbR ("we", "us", or "our") operates CoverLetterGPT. 
-            This page informs you of our policies regarding the collection, use, and 
-            disclosure of personal data when you use our Service and the choices you 
-            have associated with that data.
+            Verantwortlich für die Datenverarbeitung auf Anschreiben Pilot ist:
+            <br />
+            [PLATZHALTER: Vor- und Nachname bzw. Firmenname]
+            <br />
+            [PLATZHALTER: Adresse]
+            <br />
+            E-Mail: [PLATZHALTER: Kontakt-E-Mail-Adresse]
           </Text>
         </LegalSection>
 
-        <LegalSection title='2. Data Controller Information'>
-          <Text>
-            The data controller for your personal data is:
-            <br />
-            Canger & Shahab Crimpin GbR
-            <br />
-            Zum Steinberg 12, 69121 Heidelberg, Germany
-            <br />
-            Email: info.crimpin@gmail.com
-          </Text>
-        </LegalSection>
-
-        <LegalSection title='3. Data We Collect'>
-          <Text mb={4}>We collect several different types of information for various purposes:</Text>
+        <LegalSection title='2. Welche Daten wir erheben'>
+          <Text mb={4}>Wir erheben nur, was für den Betrieb des Dienstes nötig ist:</Text>
           <UnorderedList spacing={4}>
             <ListItem>
-              <Text fontWeight='semibold'>Account Data:</Text>
+              <Text fontWeight='semibold'>Konto-Daten (bei Anmeldung mit Google):</Text>
               <UnorderedList ml={6} mt={2} spacing={2}>
-                <ListItem>Email address</ListItem>
-                <ListItem>Name</ListItem>
-                <ListItem>Password (encrypted)</ListItem>
-                <ListItem>Profile information</ListItem>
-                <ListItem>Account settings</ListItem>
+                <ListItem>E-Mail-Adresse</ListItem>
+                <ListItem>Von Google übermittelter Benutzername</ListItem>
               </UnorderedList>
             </ListItem>
             <ListItem>
-              <Text fontWeight='semibold'>Usage Data:</Text>
+              <Text fontWeight='semibold'>Inhaltsdaten:</Text>
               <UnorderedList ml={6} mt={2} spacing={2}>
-                <ListItem>Access times and dates</ListItem>
+                <ListItem>Von dir eingegebene Stellenanzeigen (Jobtitel, Unternehmen, Ort, Beschreibung)</ListItem>
+                <ListItem>Der Text deines hochgeladenen Lebenslaufs — wird ausschließlich zur Erstellung des Anschreibens an OpenAI übermittelt und anschließend nicht dauerhaft gespeichert; gespeichert wird nur das erzeugte Anschreiben selbst</ListItem>
+                <ListItem>PDFs, die du im kostenlosen Bewerbungsmappe-Tool zusammenfügst, werden zu keinem Zeitpunkt auf unseren Server hochgeladen — das Zusammenfügen geschieht vollständig in deinem Browser</ListItem>
               </UnorderedList>
             </ListItem>
             <ListItem>
-              <Text fontWeight='semibold'>Content Data:</Text>
+              <Text fontWeight='semibold'>Zahlungsdaten:</Text>
               <UnorderedList ml={6} mt={2} spacing={2}>
-                <ListItem>CV information you provide</ListItem>
-                <ListItem>Job descriptions you input</ListItem>
-                <ListItem>Generated (example)cover letters</ListItem>
-              </UnorderedList>
-            </ListItem>
-            <ListItem>
-              <Text fontWeight='semibold'>Payment Data:</Text>
-              <UnorderedList ml={6} mt={2} spacing={2}>
-                <ListItem>Payment history</ListItem>
-                <ListItem>Subscription status</ListItem>
-                <ListItem>Note: Payment processing is handled by Stripe</ListItem>
+                <ListItem>Abo-Status und Zahlungsverlauf (die eigentlichen Zahlungsdaten wie Kartennummern verarbeitet ausschließlich Stripe, wir sehen und speichern sie nicht)</ListItem>
               </UnorderedList>
             </ListItem>
           </UnorderedList>
         </LegalSection>
 
-        <LegalSection title='4. How We Use Your Data'>
+        <LegalSection title='3. Wie wir deine Daten nutzen'>
           <UnorderedList spacing={4}>
             <ListItem>
-              <Text fontWeight='semibold'>To Provide Our Service:</Text>
+              <Text fontWeight='semibold'>Zur Bereitstellung des Dienstes:</Text>
               <UnorderedList ml={6} mt={2} spacing={2}>
-                <ListItem>Generate personalized cover letters</ListItem>
-                <ListItem>Manage your account</ListItem>
-                <ListItem>Process your payments</ListItem>
+                <ListItem>Erstellung deines individuellen Anschreibens</ListItem>
+                <ListItem>Verwaltung deines Kontos</ListItem>
+                <ListItem>Abwicklung deines Abos</ListItem>
               </UnorderedList>
             </ListItem>
             <ListItem>
-              <Text fontWeight='semibold'>To Improve Our Service:</Text>
+              <Text fontWeight='semibold'>Zur Kommunikation:</Text>
               <UnorderedList ml={6} mt={2} spacing={2}>
-                <ListItem>Analyze usage patterns</ListItem>
-                <ListItem>Debug technical issues</ListItem>
-                <ListItem>Enhance user experience</ListItem>
-              </UnorderedList>
-            </ListItem>
-            <ListItem>
-              <Text fontWeight='semibold'>To Communicate With You:</Text>
-              <UnorderedList ml={6} mt={2} spacing={2}>
-                <ListItem>Send service updates</ListItem>
-                <ListItem>Respond to your requests</ListItem>
-                <ListItem>Provide customer support</ListItem>
+                <ListItem>Hinweis vor Ablauf deines Abos</ListItem>
+                <ListItem>Antwort auf deine Anfragen</ListItem>
               </UnorderedList>
             </ListItem>
           </UnorderedList>
         </LegalSection>
 
-        <LegalSection title='5. Legal Basis for Processing'>
+        <LegalSection title='4. Rechtsgrundlage der Verarbeitung (Art. 6 DSGVO)'>
           <UnorderedList spacing={4}>
             <ListItem>
-              <Text fontWeight='semibold' as='span'>Contract Performance: </Text>
-              Processing necessary for the performance of our contract with you
+              <Text fontWeight='semibold' as='span'>Vertragserfüllung (Art. 6 Abs. 1 lit. b): </Text>
+              Verarbeitung, die zur Erbringung des Dienstes notwendig ist
             </ListItem>
             <ListItem>
-              <Text fontWeight='semibold' as='span'>Legal Obligations: </Text>
-              Processing necessary for compliance with legal obligations
+              <Text fontWeight='semibold' as='span'>Berechtigtes Interesse (Art. 6 Abs. 1 lit. f): </Text>
+              Verbesserung und Absicherung des Dienstes
             </ListItem>
             <ListItem>
-              <Text fontWeight='semibold' as='span'>Legitimate Interests: </Text>
-              Processing based on our legitimate interests in improving and promoting our services
-            </ListItem>
-            <ListItem>
-              <Text fontWeight='semibold' as='span'>Consent: </Text>
-              Processing based on your specific consent where required
+              <Text fontWeight='semibold' as='span'>Einwilligung (Art. 6 Abs. 1 lit. a): </Text>
+              Soweit im Einzelfall erforderlich
             </ListItem>
           </UnorderedList>
         </LegalSection>
 
-        <LegalSection title='6. Data Retention'>
-          <Text mb={4}>
-            We retain your personal data only for as long as necessary to fulfill the 
-            purposes for which we collected it, including:
-          </Text>
+        <LegalSection title='5. Speicherdauer'>
           <UnorderedList spacing={2}>
-            <ListItem>Account data: As long as your account is active</ListItem>
-            <ListItem>Generated content: For as long as necessary to provide our services or until you delete your account</ListItem>
-            <ListItem>Payment records: As required by tax laws (typically 10 years in Germany)</ListItem>
+            <ListItem>Kontodaten: solange dein Konto besteht</ListItem>
+            <ListItem>Erzeugte Anschreiben: bis du sie löschst oder dein Konto löschst</ListItem>
+            <ListItem>Roh-Lebenslauftext: wird nicht gespeichert (siehe Abschnitt 2)</ListItem>
+            <ListItem>Zahlungsbezogene Belege: gemäß gesetzlicher Aufbewahrungspflichten (in Deutschland i. d. R. 10 Jahre)</ListItem>
           </UnorderedList>
         </LegalSection>
 
-        <LegalSection title='7. Your Data Protection Rights'>
-          <Text mb={4}>Under GDPR, you have the following rights:</Text>
+        <LegalSection title='6. Deine Rechte nach der DSGVO'>
+          <Text mb={4}>Du hast das Recht auf:</Text>
           <UnorderedList spacing={2} mb={4}>
-            <ListItem>Right to access your personal data</ListItem>
-            <ListItem>Right to rectification of inaccurate data</ListItem>
-            <ListItem>Right to erasure ("right to be forgotten")</ListItem>
-            <ListItem>Right to restrict processing</ListItem>
-            <ListItem>Right to data portability</ListItem>
-            <ListItem>Right to object to processing</ListItem>
-            <ListItem>Right to withdraw consent</ListItem>
+            <ListItem>Auskunft über deine gespeicherten Daten</ListItem>
+            <ListItem>Berichtigung unrichtiger Daten</ListItem>
+            <ListItem>Löschung ("Recht auf Vergessenwerden")</ListItem>
+            <ListItem>Einschränkung der Verarbeitung</ListItem>
+            <ListItem>Datenübertragbarkeit</ListItem>
+            <ListItem>Widerspruch gegen die Verarbeitung</ListItem>
+            <ListItem>Widerruf einer erteilten Einwilligung</ListItem>
           </UnorderedList>
           <Text>
-            To exercise these rights, please contact us at info.crimpin@gmail.com
+            Zur Ausübung dieser Rechte wende dich an [PLATZHALTER: Kontakt-E-Mail-Adresse].
           </Text>
         </LegalSection>
 
-        <LegalSection title='8. Data Sharing and Third Parties'>
-          <Text mb={4}>We share your data with the following third parties:</Text>
+        <LegalSection title='7. Weitergabe an Dritte'>
+          <Text mb={4}>Wir geben Daten an folgende Dienstleister weiter, jeweils nur im nötigen Umfang:</Text>
           <UnorderedList spacing={4} mb={4}>
             <ListItem>
-              <Text fontWeight='semibold' as='span'>Stripe: </Text>
-              For payment processing
+              <Text fontWeight='semibold' as='span'>Google (Login): </Text>
+              Für die Anmeldung per Google-Konto
             </ListItem>
             <ListItem>
               <Text fontWeight='semibold' as='span'>OpenAI: </Text>
-              For AI-powered content generation
+              Erhält Stellenanzeige und Lebenslauftext zur Erzeugung des Anschreibens; OpenAI kann Anfragen außerhalb der EU (USA) verarbeiten
+            </ListItem>
+            <ListItem>
+              <Text fontWeight='semibold' as='span'>Stripe: </Text>
+              Für die Zahlungsabwicklung
+            </ListItem>
+            <ListItem>
+              <Text fontWeight='semibold' as='span'>SendGrid: </Text>
+              Für den Versand von Benachrichtigungs-E-Mails (z. B. Hinweis vor Abo-Ablauf)
             </ListItem>
           </UnorderedList>
           <Text>
-            All third parties are contractually obligated to protect your data and 
-            may only use it for specified purposes.
+            Mit allen Dienstleistern, die personenbezogene Daten in unserem Auftrag verarbeiten,
+            besteht bzw. muss vor dem Live-Betrieb ein Auftragsverarbeitungsvertrag (AVV) nach
+            Art. 28 DSGVO abgeschlossen werden.
           </Text>
         </LegalSection>
 
-        <LegalSection title='9. International Data Transfers'>
-          <Text mb={4}>
-            Your data may be transferred to and processed in countries outside the EU. 
-            When this occurs, we ensure appropriate safeguards are in place through:
+        <LegalSection title='8. Datenübermittlung in Drittländer'>
+          <Text>
+            OpenAI (USA) kann Daten außerhalb der EU verarbeiten. Wir stellen sicher, dass dabei
+            geeignete Garantien bestehen, insbesondere EU-Standardvertragsklauseln oder ein
+            Angemessenheitsbeschluss der EU-Kommission.
           </Text>
+        </LegalSection>
+
+        <LegalSection title='9. Cookies und Tracking'>
+          <Text mb={4}>
+            Anschreiben Pilot verwendet keine Cookies zu Analyse- oder Werbezwecken. Die
+            Anmeldung wird über ein technisch notwendiges Sitzungs-Token verwaltet, das beim
+            Abmelden bzw. Schließen des Browsers gelöscht wird.
+          </Text>
+        </LegalSection>
+
+        <LegalSection title='10. Datensicherheit'>
+          <Text mb={4}>Wir setzen angemessene technische und organisatorische Maßnahmen ein, u. a.:</Text>
           <UnorderedList spacing={2}>
-            <ListItem>EU Standard Contractual Clauses</ListItem>
-            <ListItem>Adequacy decisions by the European Commission</ListItem>
-            <ListItem>Other legally recognized transfer mechanisms</ListItem>
+            <ListItem>Verschlüsselte Übertragung (HTTPS)</ListItem>
+            <ListItem>Zugriffsbeschränkungen und Authentifizierung</ListItem>
+            <ListItem>Keine Speicherung von Zahlungsdaten auf eigenen Servern (dies übernimmt Stripe)</ListItem>
           </UnorderedList>
         </LegalSection>
 
-        <LegalSection title='10. Cookies and Tracking'>
-          <Text mb={4}>
-            Our service does not use cookies or tracking technologies. We prioritize your privacy 
-            and have designed our service to function without the need for cookies or similar 
-            tracking mechanisms.
-          </Text>
+        <LegalSection title='11. Änderungen dieser Datenschutzerklärung'>
           <Text>
-            Any essential session management is handled securely through standard authentication 
-            tokens that are automatically cleared when you log out or close your browser.
+            Wir können diese Datenschutzerklärung von Zeit zu Zeit aktualisieren. Änderungen
+            werden auf dieser Seite veröffentlicht, das Datum oben wird entsprechend angepasst.
           </Text>
         </LegalSection>
 
-        <LegalSection title='11. Data Security'>
+        <LegalSection title='12. Kontakt'>
           <Text mb={4}>
-            We implement appropriate technical and organizational measures to protect 
-            your personal data, including:
-          </Text>
-          <UnorderedList spacing={2}>
-            <ListItem>Regular security assessments</ListItem>
-            <ListItem>Access controls and authentication</ListItem>
-            <ListItem>Regular backups</ListItem>
-            <ListItem>Staff training on data protection</ListItem>
-          </UnorderedList>
-        </LegalSection>
-
-        <LegalSection title='12. Changes to This Privacy Policy'>
-          <Text mb={4}>
-            We may update our Privacy Policy from time to time. We will notify you of 
-            any changes by posting the new Privacy Policy on this page and updating 
-            the "Last updated" date.
-          </Text>
-          <Text>
-            You are advised to review this Privacy Policy periodically for any changes. 
-            Changes to this Privacy Policy are effective when they are posted on this page.
-          </Text>
-        </LegalSection>
-
-        <LegalSection title='13. Contact Us'>
-          <Text mb={4}>
-            If you have any questions about this Privacy Policy or our data practices, 
-            please contact us:
+            Bei Fragen zu dieser Datenschutzerklärung oder zur Verarbeitung deiner Daten:
           </Text>
           <UnorderedList spacing={2} mb={4}>
-            <ListItem>
-              By email: info.crimpin@gmail.com
-            </ListItem>
-            <ListItem>
-              By mail: Canger & Shahab Crimpin GbR, Zum Steinberg 12, 69121 Heidelberg, Germany
-            </ListItem>
+            <ListItem>E-Mail: [PLATZHALTER: Kontakt-E-Mail-Adresse]</ListItem>
+            <ListItem>Post: [PLATZHALTER: Adresse]</ListItem>
           </UnorderedList>
           <Text>
-            You have the right to lodge a complaint with a supervisory authority if you 
-            believe our processing of your personal data violates data protection laws.
+            Du hast das Recht, dich bei einer Datenschutz-Aufsichtsbehörde zu beschweren, wenn du
+            der Ansicht bist, dass die Verarbeitung deiner Daten gegen die DSGVO verstößt.
           </Text>
         </LegalSection>
       </VStack>
