@@ -105,6 +105,52 @@ async function checkIfUserPaid({ context }: { context: any }) {
   }
 }
 
+// Security: found while checking the actual code (Saskia asked directly, 2026-09-23) —
+// a paying user previously had NO limit on how many times they could call the OpenAI
+// endpoint. Free users are naturally capped by their credit count, but hasPaid users
+// were not capped at all: a compromised account or a script could generate unbounded
+// requests, each a real OpenAI cost with nothing to stop it. This closes that gap using
+// data already in the DB (CoverLetter.createdAt), no new table needed.
+// In-memory sliding window, shared by every action that calls OpenAI (generateCoverLetter,
+// generateEdit — updateCoverLetter goes through generateCoverLetter so it's covered too).
+// Deliberately not DB-backed: this needs to catch generateEdit calls too, which don't create
+// a CoverLetter row to count. Known limitation: resets if the server restarts, and won't
+// coordinate across multiple server instances if this ever runs on more than one — fine for
+// a single Render instance at this stage, revisit (e.g. a Redis-backed limiter) before
+// scaling to more than one server process.
+const MAX_AI_CALLS_PER_HOUR = 20;
+const aiCallLog = new Map<number, number[]>();
+
+function checkRateLimit({ context }: { context: any }) {
+  const userId = context.user.id;
+  const oneHourAgo = Date.now() - 60 * 60 * 1000;
+  const recent = (aiCallLog.get(userId) || []).filter((t) => t > oneHourAgo);
+  if (recent.length >= MAX_AI_CALLS_PER_HOUR) {
+    throw new HttpError(
+      429,
+      `Zu viele Anfragen. Bitte warte etwas, bevor du es erneut versuchst (max. ${MAX_AI_CALLS_PER_HOUR} pro Stunde).`
+    );
+  }
+  recent.push(Date.now());
+  aiCallLog.set(userId, recent);
+}
+
+// Security: no length cap previously existed on what got sent to OpenAI — pasting an
+// oversized resume or job description would still be sent as-is, at real per-token cost,
+// with no feedback to the user before the request went out. These limits are generous for
+// any real CV/job posting and only block deliberately oversized input.
+const MAX_RESUME_LENGTH = 20_000;
+const MAX_DESCRIPTION_LENGTH = 10_000;
+
+function checkInputLength({ content, description }: { content?: string; description?: string }) {
+  if (content && content.length > MAX_RESUME_LENGTH) {
+    throw new HttpError(400, `Der Lebenslauf-Text ist zu lang (max. ${MAX_RESUME_LENGTH.toLocaleString('de-DE')} Zeichen).`);
+  }
+  if (description && description.length > MAX_DESCRIPTION_LENGTH) {
+    throw new HttpError(400, `Die Stellenanzeige ist zu lang (max. ${MAX_DESCRIPTION_LENGTH.toLocaleString('de-DE')} Zeichen).`);
+  }
+}
+
 export const generateCoverLetter: GenerateCoverLetter<CoverLetterPayload, CoverLetter> = async (
   { jobId, title, content, description, isCompleteCoverLetter, includeWittyRemark, temperature, gptModel },
   context
@@ -113,6 +159,8 @@ export const generateCoverLetter: GenerateCoverLetter<CoverLetterPayload, CoverL
     throw new HttpError(401);
   }
   await checkIfUserPaid({ context })
+  checkRateLimit({ context });
+  checkInputLength({ content, description });
 
   let command;
   if (isCompleteCoverLetter) {
@@ -201,6 +249,8 @@ export const generateEdit: GenerateEdit<
     throw new HttpError(401);
   }
   await checkIfUserPaid({ context });
+  checkRateLimit({ context });
+  checkInputLength({ content });
 
   let command;
   command = `You are a cover letter editor. You will be given a piece of isolated text from within a cover letter and told how you can improve it. Only respond with the revision. Make sure the revision is in the same language as the given isolated text.`;
