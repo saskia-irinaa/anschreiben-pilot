@@ -1,0 +1,90 @@
+# Render Blueprint for Anschreiben Pilot (Wasp app).
+#
+# KNOWN GAP - read before using this (see DEPLOY.md "Known gap" section for detail):
+# The committed ./Dockerfile is the verbatim output of `wasp dockerfile`. Its COPY
+# instructions (src, package.json, server, sdk, db/schema.prisma) are written assuming
+# `.wasp/build` is the Docker build context - the directory Wasp itself generates when
+# you run `wasp build`. That directory is gitignored and does not exist in this repo.
+# A plain "build straight from the GitHub repo" Docker deploy - which is what a Render
+# Blueprint does by default when it sees dockerfilePath/dockerContext below - will
+# therefore FAIL at `COPY server .wasp/build/server` because no such path exists at
+# the repo root as pushed to GitHub. This blueprint is prepared so the shape (server,
+# client, database, required env vars) is all in one place, but the server service's
+# build will not succeed until that gap is closed. Do not click Deploy expecting a
+# working service on the first try.
+
+databases:
+  - name: anschreiben-pilot-db
+    plan: starter
+    postgresMajorVersion: "15"
+
+services:
+  # --- Server (Wasp backend: Node + Prisma + Postgres migrations) ---
+  # See KNOWN GAP above and DEPLOY.md: this will not build as-is straight from GitHub.
+  - type: web
+    name: anschreiben-pilot-server
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    plan: starter
+    healthCheckPath: /
+    envVars:
+      # Render sets PORT itself; Wasp's server reads it directly via process.env.PORT.
+      - key: NODE_ENV
+        value: production
+      # Fill these in once you know the deployed URLs (server's own Render URL, or
+      # your custom domain once picked - see PROJECT.json, domain still undecided).
+      # Wasp needs both for OAuth redirects, email links, and CORS.
+      - key: WASP_WEB_CLIENT_URL
+        sync: false
+      - key: WASP_SERVER_URL
+        sync: false
+      - key: DATABASE_URL
+        fromDatabase:
+          name: anschreiben-pilot-db
+          property: connectionString
+      # --- from env.server.example - fill in via Render's dashboard, never here ---
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      - key: GOOGLE_CLIENT_SECRET
+        sync: false
+      - key: SENDGRID_API_KEY
+        sync: false
+      - key: SEND_EMAILS_IN_DEVELOPMENT
+        value: "false"
+      - key: STRIPE_KEY
+        sync: false
+      - key: PRODUCT_PRICE_ID
+        sync: false
+      - key: PRODUCT_CREDITS_PRICE_ID
+        sync: false
+
+  # --- Client (static Vite build that `wasp build` produces under .wasp/build/web-app) ---
+  # This is a Render Static Site, not a Docker service - its buildCommand runs in a
+  # plain Node build environment, so it can install the Wasp CLI itself and doesn't
+  # hit the Docker-context gap the server does. Still unverified end-to-end (no Render
+  # account access in this environment) - check the Wasp CLI install script URL and
+  # version pin still match wasp.sh's current instructions before relying on this.
+  - type: web
+    name: anschreiben-pilot-client
+    runtime: static
+    buildCommand: >-
+      curl -sSL https://get.wasp.sh/installer.sh | sh -s -- -v 0.15.0 &&
+      export PATH="$HOME/.local/bin:$PATH" &&
+      npm ci &&
+      wasp build &&
+      cd .wasp/build/web-app &&
+      npm ci &&
+      npm run build
+    staticPublishPath: .wasp/build/web-app/build
+    envVars:
+      # Baked into the static bundle at build time - must point at the server's
+      # public URL (Render URL or custom domain), matching WASP_SERVER_URL above.
+      - key: REACT_APP_API_URL
+        sync: false
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
