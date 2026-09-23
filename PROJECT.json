@@ -1,0 +1,16 @@
+{
+  "name": "anschreiben-pilot",
+  "what": "AI cover-letter generator for the DACH market, forked from vincanger/coverlettergpt (GPL-3.0). Differentiation: correct German (DIN 5008) formatting, deliberately simpler than the 11 competitors found (JobStep, Rezi, MakeMyCV, bewerbung.net, bewerbung2go.de, LiveCareer, Jotform, onlinelebenslauf.com, ki-motivationsschreiben.ch, jobs.ch, Bewerbung.ai), plus a free Bewerbungsmappe PDF-merger as a growth hook. Full research and spec live in brain: brain/projects/micro-saas-dach.md and brain/projects/micro-saas-dach-spec-cover-letter-cv.md.",
+  "productLine": "micro-saas-dach",
+  "state": "doing",
+  "open": [
+    "Translate UI and prompts to German",
+    "Add DIN 5008 formatting to the resume/cover-letter output",
+    "Build the Bewerbungsmappe PDF-merger as a free standalone hook tool",
+    "Set up Render deployment (Docker, per Wasp's generated Dockerfile) instead of Fly.io/Railway",
+    "Register anschreibenpilot.de (+ .com)",
+    "Set up Stripe/Polar for DACH pricing before any real launch",
+    "Privacy policy needs real legal review before handling real user data (GDPR)"
+  ],
+  "parked": []
+}
