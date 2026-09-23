@@ -4,13 +4,14 @@
   "productLine": "micro-saas-dach",
   "state": "doing",
   "open": [
-    "Translate UI and prompts to German",
-    "Add DIN 5008 formatting to the resume/cover-letter output",
-    "Build the Bewerbungsmappe PDF-merger as a free standalone hook tool",
-    "Set up Render deployment (Docker, per Wasp's generated Dockerfile) instead of Fly.io/Railway",
-    "Register anschreibenpilot.de (+ .com)",
-    "Set up Stripe/Polar for DACH pricing before any real launch",
-    "Privacy policy needs real legal review before handling real user data (GDPR)"
+    "Translate remaining pages to German: JobsPage, ProfilePage, CheckoutPage, CoverLetterPage, legal pages (Tos/Privacy) — MainPage, NavBar, LoginPage done",
+    "Decide: remove Lightning/Bitcoin sign-in + payment entirely (vince's personal Alby setup, touches schema.prisma LnData/LnPayment + several files) or keep it — text translated either way, not removed yet",
+    "Build the Bewerbungsmappe PDF-merger as a free standalone hook tool (not started)",
+    "Set up Render deployment (Docker, per Wasp's generated Dockerfile) instead of Fly.io/Railway (not started)",
+    "Register anschreibenpilot.de (+ .com) — Saskia's call, still open on the name itself",
+    "Set up Stripe/Polar for DACH pricing before any real launch (still uses vince's original US Stripe product IDs)",
+    "Privacy policy needs real legal review before handling real user data (GDPR) — not drafted",
+    "No local dev environment tested yet (needs Docker for Postgres + an OpenAI key) — DIN 5008 prompt change is unverified against a real API call"
   ],
   "parked": []
 }
