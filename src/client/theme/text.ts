@@ -1,5 +1,5 @@
 const FONT_SCALE_BASE = 1;
-const FONT_SCALE_MULTIPLIER = 1.25;
+const FONT_SCALE_MULTIPLIER = 1.2;
 
 export const fonts = {
   heading: `'Inter', sans-serif`,

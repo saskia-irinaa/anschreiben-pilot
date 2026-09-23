@@ -35,15 +35,16 @@ const variantSolid = (props: any) => {
     color: color,
     _hover: {
       bg: hoverBg,
+      boxShadow: 'glow-sm',
     },
     _focus: {
-      boxShadow: 'none',
+      boxShadow: 'glow-sm',
       borderColor: 'active',
     },
     _disabled: {
       bg: disabledBg,
       pointerEvents: 'none',
-      opacity: 0.66,
+      opacity: 0.5,
     },
     _active: { bg: activeBg },
   };
@@ -55,7 +56,13 @@ export const Button = {
   },
   baseStyle: {
     border: 'sm',
-    transition: 'transform 0.05s ease-out, background 0.3s, opacity 0.3s',
+    borderRadius: 'md',
+    fontWeight: 600,
+    transition: 'transform 0.05s ease-out, background 0.2s, box-shadow 0.2s, opacity 0.2s',
+  },
+  sizes: {
+    md: { fontSize: 'sm', px: 4, h: 9 },
+    sm: { fontSize: 'xs', px: 3, h: 8 },
   },
   variants: {
     solid: variantSolid,
@@ -64,7 +71,7 @@ export const Button = {
 
 ChakraButton.defaultProps = {
   ...ChakraButton.defaultProps,
-  fontSize: 'md',
+  fontSize: 'sm',
   variant: 'solid',
   backdropFilter: 'blur(4px)',
 };
@@ -85,7 +92,7 @@ export const Checkbox = {
         borderColor: 'border-contrast-md',
       },
       _focus: {
-        boxShadow: '0px 0px 0px 2px var(--chakra-colors-active)',
+        boxShadow: 'glow-sm',
         borderColor: 'active',
       },
       _disabled: {
@@ -102,6 +109,9 @@ ChakraInput.defaultProps = {
 };
 
 export const Input = {
+  sizes: {
+    md: { field: { fontSize: 'sm', h: 9, borderRadius: 'md' } },
+  },
   variants: {
     outline: {
       field: {
@@ -114,7 +124,7 @@ export const Input = {
           borderColor: 'border-contrast-md',
         },
         _focus: {
-          boxShadow: 'none',
+          boxShadow: 'glow-sm',
           borderColor: 'active',
         },
         _disabled: {
@@ -135,19 +145,19 @@ ChakraTextarea.defaultProps = {
   variant: 'outline',
   sx: {
     '&::-webkit-scrollbar': {
-      width: '12px',
+      width: '10px',
     },
     '&::-webkit-scrollbar-track': {
       backgroundColor: 'transparent',
     },
     '&::-webkit-scrollbar-thumb': {
-      backgroundColor: 'purple.100',
+      backgroundColor: 'var(--chakra-colors-border-contrast-md)',
       borderRadius: '20px',
       border: '3px solid transparent',
       backgroundClip: 'content-box',
     },
     '&::-webkit-scrollbar-thumb:hover': {
-      backgroundColor: 'purple.200',
+      backgroundColor: 'var(--chakra-colors-border-contrast-lg)',
     },
   },
 };
@@ -155,6 +165,8 @@ ChakraTextarea.defaultProps = {
 export const Textarea = {
   variants: {
     outline: {
+      fontSize: 'sm',
+      borderRadius: 'md',
       border: 'sm',
       borderColor: 'border-contrast-xs',
       bg: 'bg-contrast-sm',
@@ -163,8 +175,9 @@ export const Textarea = {
         borderColor: 'border-contrast-md',
       },
       _focus: {
-        boxShadow: 'none',
+        boxShadow: 'glow-sm',
         bgColor: 'bg-contrast-xs',
+        borderColor: 'active',
       },
       _disabled: {
         bg: 'bg-contrast-xs',
@@ -183,20 +196,17 @@ ChakraSelect.defaultProps = {
   border: 'sm',
   borderColor: 'border-contrast-xs',
   bg: 'bg-contrast-sm',
+  fontSize: 'sm',
 
   _hover: {
     bg: 'bg-contrast-md',
     borderColor: 'border-contrast-sm',
   },
   _focus: {
-    boxShadow: 'none',
+    boxShadow: 'glow-sm',
     borderColor: 'active',
   },
-  // _disabled: {
-  //   bg: 'bg-contrast-xs',
-  // },
   _placeholder: {
-    // color: 'white',
     fontSize: 'sm',
     color: 'text-contrast-sm',
   },
@@ -225,20 +235,25 @@ export const Link = {
 };
 
 const config = {
-  initialColorMode: 'light',
-  useSystemColorMode: true,
+  initialColorMode: 'dark',
+  useSystemColorMode: false,
 };
 
 export const styles = {
   global: (props: StyleFunctionProps) => ({
     html: {
       fontSize: {
-        base: '90%',
-        md: '100%',
+        base: '87%',
+        md: '95%',
       },
     },
     body: {
       bgColor: 'bg-body',
+      backgroundImage:
+        props.colorMode === 'dark'
+          ? 'radial-gradient(ellipse 80% 50% at 50% -10%, rgba(159, 122, 234, 0.18), transparent)'
+          : 'none',
+      backgroundAttachment: 'fixed',
     },
   }),
 };
@@ -250,29 +265,10 @@ export const theme = extendTheme({
     Button,
     Link,
     Checkbox,
-    // AlertDialog: {
-    //   baseStyle: {
-    //     body: {
-    //       bgColor: 'bg-body',
-    //     },
-    //     dialog: {
-    //       bg: 'bg-contrast-sm',
-    //       color: 'text-contrast-lg',
-    //       border: 'sm',
-    //       borderColor: 'border-contrast-md',
-    //       boxShadow: '0px 0px 0px 1px var(--chakra-colors-active)',
-    //     },
-    //     header: {
-    //       color: 'text-contrast-lg',
-    //     },
-    //     footer: {
-    //       color: 'text-contrast-md',
-    //     },
-    //   },
-    // },
     Heading: {
       baseStyle: {
-        fontWeight: 'bold',
+        fontWeight: 700,
+        letterSpacing: '-0.01em',
       },
     },
   },
@@ -284,20 +280,24 @@ export const theme = extendTheme({
   layerStyles: {
     card: {
       bgColor: 'bg-contrast-xs',
+      backdropFilter: 'blur(20px)',
       border: 'sm',
-      rounded: 'lg',
+      rounded: 'xl',
+      boxShadow: 'glow-sm',
     },
     cardMd: {
       bgColor: 'bg-contrast-md',
+      backdropFilter: 'blur(20px)',
       border: 'sm',
-      rounded: 'lg',
+      rounded: 'xl',
+      boxShadow: 'glow-sm',
     },
     cardLg: {
       bgColor: 'bg-contrast-lg',
+      backdropFilter: 'blur(20px)',
       border: 'sm',
-      rounded: 'lg',
-      // boxShadow: '0px 0px 0px 1px var(--chakra-colors-active)',
+      rounded: 'xl',
+      boxShadow: 'glow-md',
     },
   },
-  // shadows: { outline: '0 0 0 1px var(--chakra-colors-active)' },
 });

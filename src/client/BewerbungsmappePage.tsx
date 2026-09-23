@@ -143,10 +143,8 @@ function BewerbungsmappePage() {
       <Heading size='md' alignSelf='start' mb={1} w='full'>
         Bewerbungsmappe erstellen
       </Heading>
-      <Text fontSize='sm' color='text-contrast-md' alignSelf='start'>
-        Füge Lebenslauf, Anschreiben und optional Zeugnisse als PDFs hinzu, bringe sie in die
-        richtige Reihenfolge und lade deine fertige Bewerbungsmappe als ein einziges PDF herunter.
-        Alles läuft direkt in deinem Browser – deine Dateien werden nicht hochgeladen.
+      <Text fontSize='xs' color='text-contrast-sm' alignSelf='start'>
+        Läuft komplett im Browser — deine Dateien verlassen dein Gerät nicht.
       </Text>
 
       <Input

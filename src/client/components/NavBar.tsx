@@ -23,27 +23,26 @@ import ThemeSwitch from './ThemeSwitch';
 export default function NavBar() {
   const { data: user } = useAuth();
 
-  const gptTextColor = useColorModeValue('purple.500', 'white');
-  const borderColor = useColorModeValue('purple.300', 'purple.100');
+  const gptTextColor = useColorModeValue('purple.500', '#c9a8ff');
 
   return (
     <HStack
       as='nav'
       align='center'
       justify='between'
-      px={7}
-      py={4}
+      px={6}
+      py={3}
       top={0}
       width='full'
       position='sticky'
-      backdropFilter='blur(5px)'
-      borderBottom='md'
-      borderColor={borderColor}
-      filter='drop-shadow(0px 0px 2px rgba(255, 255, 255, 0.25))'
+      bgColor='bg-overlay'
+      backdropFilter='blur(16px)'
+      borderBottom='sm'
+      boxShadow='glow-sm'
       color='text-contrast-lg'
       zIndex={99}
     >
-      <HStack width='full' px={1} gap={3} align='center' justify='space-between'>
+      <HStack width='full' px={1} gap={2} align='center' justify='space-between'>
         <Link as={RouterLink} to='/'>
           <HStack gap={0}>
             <Heading size='md' color={'text-contrast-md'}>
@@ -109,8 +108,23 @@ function NavButton({ children, icon, to, ...props }: NavButtonProps) {
   }
 
   return (
-    <Link as={RouterLink} to={to} display={['none', 'block']} ref={linkRef} onClick={removeFocus}>
-      <HStack {...props}>
+    <Link
+      as={RouterLink}
+      to={to}
+      display={['none', 'block']}
+      ref={linkRef}
+      onClick={removeFocus}
+      _hover={{ textDecoration: 'none' }}
+    >
+      <HStack
+        px={3}
+        py={1.5}
+        borderRadius='md'
+        transition='background 0.15s ease-out'
+        _hover={{ bgColor: 'bg-contrast-sm' }}
+        fontSize='sm'
+        {...props}
+      >
         {icon}
         <Text>{children}</Text>
       </HStack>
