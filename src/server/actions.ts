@@ -118,20 +118,36 @@ async function checkIfUserPaid({ context }: { context: any }) {
 // coordinate across multiple server instances if this ever runs on more than one — fine for
 // a single Render instance at this stage, revisit (e.g. a Redis-backed limiter) before
 // scaling to more than one server process.
-const MAX_AI_CALLS_PER_HOUR = 20;
+// Tightened 2026-09-23 after Saskia asked whether 20/hour was actually reasonable — it
+// wasn't defensible on the GPT-4o tier specifically: 20/hour sustained on gpt-4o would run
+// roughly EUR 120/month on ONE account, more than that account's own subscription covers.
+// An hourly-only cap also has a gap: hitting the limit every hour for 24h still adds up.
+// Two limits now, both must be respected:
+const MAX_AI_CALLS_PER_HOUR = 10;
+const MAX_AI_CALLS_PER_DAY = 50;
 const aiCallLog = new Map<number, number[]>();
 
 function checkRateLimit({ context }: { context: any }) {
   const userId = context.user.id;
-  const oneHourAgo = Date.now() - 60 * 60 * 1000;
-  const recent = (aiCallLog.get(userId) || []).filter((t) => t > oneHourAgo);
-  if (recent.length >= MAX_AI_CALLS_PER_HOUR) {
+  const now = Date.now();
+  const oneHourAgo = now - 60 * 60 * 1000;
+  const oneDayAgo = now - 24 * 60 * 60 * 1000;
+  const recent = (aiCallLog.get(userId) || []).filter((t) => t > oneDayAgo);
+
+  const inLastHour = recent.filter((t) => t > oneHourAgo).length;
+  if (inLastHour >= MAX_AI_CALLS_PER_HOUR) {
     throw new HttpError(
       429,
       `Zu viele Anfragen. Bitte warte etwas, bevor du es erneut versuchst (max. ${MAX_AI_CALLS_PER_HOUR} pro Stunde).`
     );
   }
-  recent.push(Date.now());
+  if (recent.length >= MAX_AI_CALLS_PER_DAY) {
+    throw new HttpError(
+      429,
+      `Tageslimit erreicht (max. ${MAX_AI_CALLS_PER_DAY} pro Tag). Bitte versuche es morgen wieder.`
+    );
+  }
+  recent.push(now);
   aiCallLog.set(userId, recent);
 }
 
