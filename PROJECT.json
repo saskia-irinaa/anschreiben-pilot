@@ -6,12 +6,14 @@
   "open": [
     "Translate remaining pages to German: JobsPage, CheckoutPage, CoverLetterPage, legal pages (Tos/Privacy) — MainPage, NavBar, LoginPage, ProfilePage, Popover, AlertDialog done",
     "Domain name still not decided — anschreibenpilot.de/.com are free and reserved as the working choice, but Saskia said she wants something more creative; not registered yet",
-    "Build the Bewerbungsmappe PDF-merger as a free standalone hook tool (not started)",
     "Set up Render deployment (Docker, per Wasp's generated Dockerfile) instead of Fly.io/Railway (not started)",
     "Set up Stripe/Polar for DACH pricing before any real launch (still uses vince's original US Stripe product IDs and USD pricing)",
     "Privacy policy needs real legal review before handling real user data (GDPR) — not drafted",
     "No live Postgres tested yet (needs Docker or a hosted DB + an OpenAI key) — compiled clean and the Lightning-removal migration is verified against Prisma's own diff engine, but the running app itself (wasp start) has not been exercised end to end",
     "DIN 5008 prompt change is unverified against a real OpenAI API call — no key configured in this environment"
+  ],
+  "done": [
+    "Bewerbungsmappe PDF-merger built (2026-09-23): public /bewerbungsmappe route, no login required, client-side only via pdf-lib (no file upload to the server) — add/reorder/remove PDFs, merge and download as one file. Linked from NavBar for both logged-in and logged-out users. Compiled clean with wasp 0.15.0. Not yet exercised in a running browser session (no live wasp start / Postgres in this environment)."
   ],
   "parked": []
 }

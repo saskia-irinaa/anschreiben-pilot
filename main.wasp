@@ -65,6 +65,11 @@ page LoginPage {
   component: import Login from "@src/client/LoginPage"
 }
 
+route BewerbungsmappeRoute { path: "/bewerbungsmappe", to: BewerbungsmappePage }
+page BewerbungsmappePage {
+  component: import Bewerbungsmappe from "@src/client/BewerbungsmappePage"
+}
+
 route JobsRoute { path: "/jobs", to: JobsPage }
 page JobsPage {
   authRequired: true,

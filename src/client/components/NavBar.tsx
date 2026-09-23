@@ -15,7 +15,7 @@ import {
 } from '@chakra-ui/react';
 import { Link as RouterLink } from 'react-router-dom';
 import { CgProfile } from 'react-icons/cg';
-import { MdWorkOutline } from 'react-icons/md';
+import { MdWorkOutline, MdOutlineMergeType } from 'react-icons/md';
 import { AiOutlineMenu } from 'react-icons/ai';
 import { useRef } from 'react';
 import ThemeSwitch from './ThemeSwitch';
@@ -63,6 +63,10 @@ export default function NavBar() {
               Bewerbungen
             </NavButton>
             <Spacer maxW='3px' />
+            <NavButton icon={<MdOutlineMergeType />} to='/bewerbungsmappe'>
+              Bewerbungsmappe
+            </NavButton>
+            <Spacer maxW='3px' />
             <NavButton icon={<CgProfile />} to='/profile'>
               Konto
             </NavButton>
@@ -72,6 +76,10 @@ export default function NavBar() {
           </>
         ) : (
           <>
+            <NavButton icon={<MdOutlineMergeType />} to='/bewerbungsmappe'>
+              Bewerbungsmappe
+            </NavButton>
+            <Spacer maxW='3px' />
             <NavButton icon={<CgProfile />} to='/login'>
               Anmelden
             </NavButton>
@@ -142,12 +150,18 @@ function MobileButton({
             <Link as={RouterLink} to={`/jobs`}>
               <MenuItem>Bewerbungen</MenuItem>
             </Link>
+            <Link as={RouterLink} to={`/bewerbungsmappe`}>
+              <MenuItem>Bewerbungsmappe</MenuItem>
+            </Link>
             <Link as={RouterLink} to={`/profile`}>
               <MenuItem>Konto</MenuItem>
             </Link>
           </>
         ) : (
           <>
+            <Link as={RouterLink} to='/bewerbungsmappe'>
+              <MenuItem>Bewerbungsmappe</MenuItem>
+            </Link>
             <Link as={RouterLink} to='/login'>
               <MenuItem>Anmelden</MenuItem>
             </Link>
