@@ -201,6 +201,7 @@ query getCoverLetterCount {
 
 api stripeWebhook {
   fn: import { stripeWebhook } from "@src/server/webhooks.js",
+  middlewareConfigFn: import { stripeMiddlewareFn } from "@src/server/webhooks.js",
   entities: [User],
   httpRoute: (POST, "/stripe-webhook")
 }

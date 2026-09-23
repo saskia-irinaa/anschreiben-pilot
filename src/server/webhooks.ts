@@ -1,14 +1,52 @@
 import { emailSender } from "wasp/server/email";
 import { type StripeWebhook } from "wasp/server/api";
+import { type MiddlewareConfigFn } from "wasp/server";
+import express from 'express';
 import Stripe from 'stripe';
 
 const stripe = new Stripe(process.env.STRIPE_KEY!, {
   apiVersion: '2023-08-16',
 });
 
+// Security fix, 2026-09-23 (Saskia asked directly whether the original repo's payment
+// code had been checked, not just the price IDs — it hadn't been, and this is what that
+// check found): the original handler did `let event: Stripe.Event = request.body;` with
+// NO signature verification at all. That means anyone could POST a fake
+// 'checkout.session.completed' body straight to /stripe-webhook naming any Stripe
+// customer ID, and the code below would mark that user hasPaid=true — free unlimited
+// access to a feature that costs real OpenAI money per use, no payment required. This
+// swaps the JSON body parser for a raw one on this route specifically (needed because
+// Stripe's signature is computed over the exact raw bytes, not the re-serialized JSON),
+// so the handler can verify the request actually came from Stripe before trusting it.
+export const stripeMiddlewareFn: MiddlewareConfigFn = (middlewareConfig) => {
+  middlewareConfig.delete('express.json');
+  middlewareConfig.set('express.raw', express.raw({ type: 'application/json' }));
+  return middlewareConfig;
+};
+
 export const stripeWebhook: StripeWebhook = async (request, response, context) => {
   console.log('\n\n <<<< custome webhook route >>>> \n\n');
-  let event: Stripe.Event = request.body;
+
+  const signature = request.headers['stripe-signature'];
+  const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+  let event: Stripe.Event;
+  try {
+    if (!webhookSecret) {
+      throw new Error('STRIPE_WEBHOOK_SECRET is not set — refusing to trust an unverified webhook.');
+    }
+    if (!signature) {
+      throw new Error('Missing stripe-signature header.');
+    }
+    // request.body is a raw Buffer here because of stripeMiddlewareFn above — this is
+    // the actual verification step, not a formality. It throws if the payload doesn't
+    // match the signature, which is exactly what should happen for a forged request.
+    event = stripe.webhooks.constructEvent(request.body, signature, webhookSecret);
+  } catch (err: any) {
+    console.error('Stripe webhook signature verification failed:', err.message);
+    response.status(400).send(`Webhook Error: ${err.message}`);
+    return;
+  }
+
   let userStripeId: string | null = null;
   const session = event.data.object as Stripe.Checkout.Session;
   userStripeId = session.customer as string;
