@@ -55,7 +55,7 @@ export function LeaveATip({
                 Du hast noch <Code>{credits}</Code> kostenlose{credits === 1 ? 's Anschreiben' : ' Anschreiben'} übrig.
               </Text>
               <Text mt={4}>
-                Hol dir Zugriff für nur <Code>6,95 €</Code> im Monat!
+                Hol dir Zugriff für nur <Code>14,90 €</Code> im Monat!
               </Text>
             </AlertDialogBody>
 

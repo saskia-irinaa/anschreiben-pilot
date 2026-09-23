@@ -140,7 +140,7 @@ async function checkIfUserPaid({ context }: { context: any }) {
 // roughly EUR 120/month on ONE account, more than that account's own subscription covers.
 // An hourly-only cap also has a gap: hitting the limit every hour for 24h still adds up.
 // A day-only cap has the same gap one level up: hitting 50/day every day for 30 days still
-// costs EUR 10-13 on the GPT-4o tier against a EUR 6,95 subscription. Added a monthly ceiling
+// costs EUR 10-13 on the GPT-4o tier against a EUR 14,90 subscription. Added a monthly ceiling
 // 2026-09-23 to close that, and dropped the daily cap since a real job search does not
 // realistically need 50 letters in a single day. Three limits now, all must be respected:
 const MAX_AI_CALLS_PER_HOUR = 10;
