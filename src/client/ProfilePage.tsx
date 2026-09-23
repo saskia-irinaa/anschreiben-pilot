@@ -110,7 +110,7 @@ export default function ProfilePage({ user }: { user: User }) {
                   </VStack> */}
                   <VStack layerStyle='card' py={5} px={7} gap={3} height='100%' width='100%' justifyContent='space-between' alignItems='center'>
                     <VStack gap={3} alignItems='start'>
-                      <Heading size='xl'>$2.95</Heading>
+                      <Heading size='xl'>6,95 €</Heading>
                       <Text textAlign='start' fontSize='md'>
                         Unbegrenztes
                         <br />
@@ -124,7 +124,7 @@ export default function ProfilePage({ user }: { user: User }) {
                   </VStack>
                   <VStack layerStyle='cardMd' borderColor={'purple.200'} borderWidth={3} py={5} px={7} gap={3} height='100%' width='100%' justifyContent='space-between' alignItems='center'>
                     <VStack gap={3} alignItems='start'>
-                      <Heading size='xl'>$5.95</Heading>
+                      <Heading size='xl'>6,95 €</Heading>
 
                       <Text textAlign='start' fontSize='md'>
                         Unbegrenztes <br /> Monatsabo
