@@ -7,7 +7,7 @@
     "Translate remaining pages to German: JobsPage, CheckoutPage, CoverLetterPage, legal pages (Tos/Privacy) — MainPage, NavBar, LoginPage, ProfilePage, Popover, AlertDialog done",
     "Domain name still not decided — anschreibenpilot.de/.com are free and reserved as the working choice, but Saskia said she wants something more creative; not registered yet",
     "Build the Bewerbungsmappe PDF-merger as a free standalone hook tool (not started)",
-    "Set up Render deployment (Docker, per Wasp's generated Dockerfile) instead of Fly.io/Railway (not started)",
+    "Render deployment config is prepared (Dockerfile generated verbatim via `wasp dockerfile`, render.yaml Blueprint for server+client+Postgres, DEPLOY.md walkthrough) but NOT executed — no Render account access in that session. Known unresolved gap: the generated Dockerfile assumes `.wasp/build` as its Docker build context, which only exists after `wasp build` runs; a plain Render Blueprint build straight from the GitHub repo will fail at the `COPY server .wasp/build/server` step until a CI step (or manual local build) produces and publishes a pre-built image instead. See DEPLOY.md's \"Known gap\" section.",
     "Set up Stripe/Polar for DACH pricing before any real launch (still uses vince's original US Stripe product IDs and USD pricing)",
     "Privacy policy needs real legal review before handling real user data (GDPR) — not drafted",
     "No live Postgres tested yet (needs Docker or a hosted DB + an OpenAI key) — compiled clean and the Lightning-removal migration is verified against Prisma's own diff engine, but the running app itself (wasp start) has not been exercised end to end",
