@@ -6,6 +6,10 @@ app CoverLetterGPT {
   head: [
         "<meta charset=\"UTF-8\" />",
         "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />",
+        "<link rel=\"preconnect\" href=\"https://fonts.googleapis.com\" />",
+        "<link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin />",
+        "<link href=\"https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap\" rel=\"stylesheet\" />",
+        "<script>try { localStorage.setItem('chakra-ui-color-mode', 'dark'); } catch (e) {}</script>",
         "<meta name=\"description\" content=\"Erstelle in Minuten ein individuelles Bewerbungsschreiben nach deutschen Standards (DIN 5008) mit KI. Anschreiben Pilot passt dein Anschreiben automatisch an die Stellenanzeige an.\" />",
         "<meta name=\"keywords\" content=\"anschreiben, bewerbungsschreiben, ki, bewerbung, lebenslauf, jobsuche\" />",
         "<meta name=\"author\" content=\"Anschreiben Pilot\" />",
