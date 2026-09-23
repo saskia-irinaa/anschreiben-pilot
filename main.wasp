@@ -101,7 +101,7 @@ page PrivacyPage {
 
 action generateCoverLetter {
   fn: import { generateCoverLetter } from "@src/server/actions.js",
-  entities: [CoverLetter, User, LnPayment]
+  entities: [CoverLetter, User]
 }
 
 action createJob {
@@ -116,12 +116,12 @@ action updateJob {
 
 action updateCoverLetter {
   fn: import { updateCoverLetter } from "@src/server/actions.js",
-  entities: [Job, CoverLetter, User, LnPayment]
+  entities: [Job, CoverLetter, User]
 }
 
 action generateEdit {
   fn: import { generateEdit } from "@src/server/actions.js",
-  entities: [CoverLetter, User, LnPayment]
+  entities: [CoverLetter, User]
 }
 
 action editCoverLetter {
@@ -154,24 +154,6 @@ action stripeCreditsPayment {
   entities: [User]
 }
 
-action getLnLoginUrl {
-  fn: import { getLnLoginUrl } from "@src/server/ln.js",
-  entities: [User, LnData]
-}
-
-action decodeInvoice {
-  fn: import { decodeInvoice } from "@src/server/ln.js",
-}
-
-action updateLnPayment {
-  fn: import { updateLnPayment } from "@src/server/ln.js",
-  entities: [LnPayment]
-}
-
-action milliSatsToCents {
-  fn: import { milliSatsToCents } from "@src/server/ln.js",
-}
-
 // 📚 Queries
 
 query getJobs {
@@ -199,11 +181,6 @@ query getUserInfo {
   entities: [User]
 }
 
-query getLnUserInfo {
-  fn: import { getLnUserInfo } from "@src/server/ln.js",
-  entities: [User, LnData]
-}
-
 query getCoverLetterCount {
   fn: import { getCoverLetterCount } from "@src/server/queries.js",
   entities: [CoverLetter]
@@ -217,12 +194,6 @@ api stripeWebhook {
   fn: import { stripeWebhook } from "@src/server/webhooks.js",
   entities: [User],
   httpRoute: (POST, "/stripe-webhook")
-}
-
-api lnLogin {
-  fn: import { lnLogin } from "@src/server/ln.js",
-  entities: [User, LnData],
-  httpRoute: (GET, "/ln-login")
 }
 
 /* 🕵️‍♂️ These are the Wasp Cron Jobs. Use them to set up recurring tasks or queues:

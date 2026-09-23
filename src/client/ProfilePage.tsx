@@ -24,7 +24,7 @@ export default function ProfilePage({ user }: { user: User }) {
       const url = response.sessionUrl;
       if (url) window.open(url, '_self');
     } catch (error) {
-      alert('Something went wrong. Please try again');
+      alert('Etwas ist schiefgelaufen. Bitte versuche es erneut.');
     }
     setIsLoading(false);
   }
@@ -36,7 +36,7 @@ export default function ProfilePage({ user }: { user: User }) {
       const url = response.sessionUrl;
       if (url) window.open(url, '_self');
     } catch (error) {
-      alert('Something went wrong. Please try again');
+      alert('Etwas ist schiefgelaufen. Bitte versuche es erneut.');
     }
     setIsGpt4Loading(false);
   }
@@ -45,24 +45,24 @@ export default function ProfilePage({ user }: { user: User }) {
     <BorderBox>
       {!!userInfo ? (
         <>
-          <Heading size='md'>👋 Hi {userInfo.email || 'There'} </Heading>
+          <Heading size='md'>👋 Hallo {userInfo.email || 'du'} </Heading>
           {userInfo.subscriptionStatus === 'past_due' ? (
             <VStack gap={3} py={5} alignItems='center'>
               <Box color='purple.400'>
                 <IoWarningOutline size={30} color='inherit' />
               </Box>
               <Text textAlign='center' fontSize='sm' textColor='text-contrast-lg'>
-                Your subscription is past due. <br /> Please update your payment method{' '}
+                Dein Abo ist überfällig. <br /> Bitte aktualisiere deine Zahlungsmethode{' '}
                 <Link textColor='purple.400' href='https://billing.stripe.com/p/login/5kA7sS0Wc3gD2QM6oo'>
-                  by clicking here
+                  hier
                 </Link>
               </Text>
             </VStack>
-          ) : userInfo.hasPaid && !userInfo.isUsingLn ? (
+          ) : userInfo.hasPaid ? (
             <VStack gap={3} pt={5} alignItems='flex-start'>
-              <Text textAlign='initial'>Thanks so much for your support!</Text>
+              <Text textAlign='initial'>Vielen Dank für deine Unterstützung!</Text>
 
-              <Text textAlign='initial'>You have unlimited access to CoverLetterGPT using {user?.gptModel === 'gpt-4' || user?.gptModel === 'gpt-4o' ? 'GPT-4o.' : 'GPT-4o-mini.'}</Text>
+              <Text textAlign='initial'>Du hast unbegrenzten Zugriff auf Anschreiben Pilot mit {user?.gptModel === 'gpt-4' || user?.gptModel === 'gpt-4o' ? 'GPT-4o.' : 'GPT-4o-mini.'}</Text>
 
               {userInfo.subscriptionStatus === 'canceled' && (
                 <Code alignSelf='center' fontSize='lg'>
@@ -70,22 +70,20 @@ export default function ProfilePage({ user }: { user: User }) {
                 </Code>
               )}
               <Text alignSelf='initial' fontSize='sm' fontStyle='italic' textColor='text-contrast-sm'>
-                To manage your subscription, please{' '}
+                Um dein Abo zu verwalten,{' '}
                 <Link textColor='purple.600' href='https://billing.stripe.com/p/login/5kA7sS0Wc3gD2QM6oo'>
-                  click here.
+                  klicke hier.
                 </Link>
               </Text>
             </VStack>
           ) : (
-            !userInfo.isUsingLn && (
-              <HStack pt={3} textAlign='center'>
-                <Heading size='sm'>You have </Heading>
-                <Code>{userInfo?.credits ? userInfo.credits : '0'}</Code>
-                <Heading size='sm'>cover letter{userInfo?.credits === 1 ? '' : 's'} left</Heading>
-              </HStack>
-            )
+            <HStack pt={3} textAlign='center'>
+              <Heading size='sm'>Du hast noch </Heading>
+              <Code>{userInfo?.credits ? userInfo.credits : '0'}</Code>
+              <Heading size='sm'>Anschreiben übrig</Heading>
+            </HStack>
           )}
-          {!userInfo.hasPaid && !userInfo.isUsingLn && (
+          {!userInfo.hasPaid && (
             <VStack py={3} gap={5}>
               <VStack py={3} gap={2}>
                 <HStack gap={5} display='grid' gridTemplateColumns='1fr 1fr'>
@@ -114,14 +112,14 @@ export default function ProfilePage({ user }: { user: User }) {
                     <VStack gap={3} alignItems='start'>
                       <Heading size='xl'>$2.95</Heading>
                       <Text textAlign='start' fontSize='md'>
-                        Unlimited
+                        Unbegrenztes
                         <br />
-                        monthly subscription
+                        Monatsabo
                       </Text>
-                      <Heading size='md'>Using GPT-4o-mini 🚀</Heading>
+                      <Heading size='md'>Mit GPT-4o-mini 🚀</Heading>
                     </VStack>
                     <Button mr={3} isLoading={isLoading} onClick={handleBuy4oMini}>
-                      Buy Now!
+                      Jetzt kaufen!
                     </Button>
                   </VStack>
                   <VStack layerStyle='cardMd' borderColor={'purple.200'} borderWidth={3} py={5} px={7} gap={3} height='100%' width='100%' justifyContent='space-between' alignItems='center'>
@@ -129,39 +127,20 @@ export default function ProfilePage({ user }: { user: User }) {
                       <Heading size='xl'>$5.95</Heading>
 
                       <Text textAlign='start' fontSize='md'>
-                        Unlimited <br /> monthly subscription
+                        Unbegrenztes <br /> Monatsabo
                       </Text>
-                      <Heading size='md'>Using GPT-4o 🤖</Heading>
+                      <Heading size='md'>Mit GPT-4o 🤖</Heading>
                     </VStack>
                     <Button colorScheme='purple' mr={3} isLoading={isGpt4loading} onClick={handleBuy4o}>
-                      💰 Buy Now!
+                      💰 Jetzt kaufen!
                     </Button>
                   </VStack>
                 </HStack>
               </VStack>
             </VStack>
           )}
-          {userInfo.isUsingLn && (
-            <VStack py={3} gap={5}>
-              <VStack py={3} gap={2}>
-                <HStack gap={5} display='grid' gridTemplateColumns='1fr'>
-                  <VStack layerStyle='card' py={5} px={7} gap={3} height='100%' width='100%' justifyContent='center' alignItems='center'>
-                    <VStack gap={3} alignItems='center'>
-                      <Heading size='xl'>⚡️</Heading>
-                      <Text textAlign='start' fontSize='md'>
-                        You have affordable, pay-per-use access to CoverLetterGPT with GPT-4o via the Lightning Network
-                      </Text>
-                      <Text textAlign='start' fontSize='sm'>
-                        Note: if you prefer a montly subscription, please logout and sign in with Google.
-                      </Text>
-                    </VStack>
-                  </VStack>
-                </HStack>
-              </VStack>
-            </VStack>
-          )}
           <Button alignSelf='flex-end' size='sm' onClick={() => logout()}>
-            Logout
+            Abmelden
           </Button>
         </>
       ) : (

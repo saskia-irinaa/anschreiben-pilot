@@ -1,41 +1,49 @@
-# CoverLetterGPT.xyz
+# Anschreiben Pilot
 
-<img src='public/homepage.png' width='600px'/>
+AI-Anschreiben-Generator für den deutschsprachigen Markt (DACH), forked von
+[vincanger/coverlettergpt](https://github.com/vincanger/coverlettergpt) (GPL-3.0).
+
+Full spec and market research: `brain/projects/micro-saas-dach-spec-cover-letter-cv.md` and
+`brain/projects/micro-saas-dach.md` in the wider workspace.
 
 ## Running it locally
+
 After cloning this repo, you can run it locally by following these steps:
 
-1. Install [Wasp](https://wasp.sh) by running `curl -sSL https://get.wasp.sh/installer.sh | sh` in your terminal.
+1. Install [Wasp](https://wasp.sh) — `npm install -g @wasp.sh/wasp-cli` (this project pins
+   `wasp: "^0.15.0"` in `main.wasp`; the CLI has since moved to v0.25+, so check
+   `wasp/docs/guides/legacy` if you hit a version mismatch).
 2. Create a `.env.server` file in the root of the project
-3. Copy the `env.server.example` file contents to `.env.server` and fill in your API keys
-4. Make sure you have a Database connected and running. Here are two quick options:
-  - run `wasp start db` from the project root. You need to have Docker installed (if not, on MacOS run `brew install docker-machine docker` and start the Docker app). This will start a Postgres database and configure it for you. No need to do anything else!
-  - or provision a Postgres database on [Railway](https://railway.app), go to settings and copy the connection url. Paste it as DATABASE_URL=<your-postgres-connection-url> into your env.server file.
+3. Copy the `env.server.example` file contents to `.env.server` and fill in your own API keys
+   — not vince's, not anyone else's
+4. Make sure you have a Database connected and running. Two options:
+   - run `wasp start db` from the project root (needs Docker running locally)
+   - or provision a Postgres database (e.g. on Render, which the rest of this workspace
+     already uses) and paste the connection string as `DATABASE_URL` in `.env.server`
 5. Run `wasp db migrate-dev`
 6. Run `wasp start`
-7. Go to `localhost:3000` in your browser (your NodeJS server will be running on port `3001`)
-8. install the [Wasp extension for VSCode](https://marketplace.visualstudio.com/items?itemName=wasp-lang.wasp) for the best DX
+7. Go to `localhost:3000` in your browser (the Node server runs on port `3001`)
 
-## How it works
+## What's different from the original coverlettergpt
 
-[coverlettergpt.xyz](http://coverlettergpt.xyz) was built in a couple of days using a few really cool tools:
+- **German-first.** The cover-letter prompt (`src/server/actions.ts`) explicitly follows
+  DIN 5008 German business-letter conventions when the job description is in German —
+  formal Anrede/Grußformel, a Betreff line, Sie-register, no joke at the end. See the
+  `DIN_5008_INSTRUCTIONS` constant.
+- **No Bitcoin Lightning.** The original had a Lightning/Bolt11 sign-in and pay-per-use
+  path tied to the original author's personal Alby wallet — irrelevant to this product's
+  audience and removed entirely (auth, payment, and the `LnData`/`LnPayment` models).
+- **UI translated to German** across the main flow (nav, the cover-letter form, login,
+  profile, the inline-edit popover, and the dialogs).
 
-- 🐝 [Wasp](https://wasp.sh) - allows you to build full-stack apps with 10x less boilerplate
-- 🎨 [Chakra-ui](https://chakra-ui.com/) - UI components for React that look good and are easy to work with
-- 🤖 [OpenAI](https://openai.com/) - GPT-4o API
-- 💸 [Stripe](https://stripe.com/) - for payments
-- ⚡️ [Lightning / Bolt11](https://github.com/bitcoinjs/bolt11) - for Bitcoin Lightning payments
+## How it works (from the original author, still accurate for the parts that are unchanged)
 
-[Wasp](https://wasp.sh) as the full-stack framework allows you to describe your app’s core features in the `main.wasp` config file in the root directory. Then it builds and glues these features into a React-Express-Prisma app for you so that you can focus on writing the client and server-side logic instead of configuring. For example, I did not have to use any third-party libraries for Google Authentication. I just wrote a couple lines of code in the config file stating that I want to use Google Auth, and Wasp configures it for me. Check out the `main.wasp` file for more.
+- 🐝 [Wasp](https://wasp.sh) — full-stack framework: describe features in `main.wasp`, it
+  glues together a React/Express/Prisma app
+- 🎨 [Chakra UI](https://chakra-ui.com/) — the component library
+- 🤖 [OpenAI](https://openai.com/) — GPT-4o / GPT-4o-mini for generation
+- 💸 [Stripe](https://stripe.com/) — payments (still wired to the original author's Stripe
+  product IDs — needs to be pointed at Saskia's own Stripe account before any real launch)
 
-Also, [Chakra-ui](https://chakra-ui.com/) is great for building nice looking UI’s really quickly and easily. Some people are turned off by the fact that they’re React components, but I find that they’re easy to customize and configure, and get me started on designs 10x faster and with less code than tailwind.
-
-For more info on the prompts and configuration I used for the [OpenAI](https://openai.com/) API, check out the `src/server/actions.ts` file.
-
-[Stripe](https://stripe.com/) makes the payment functionality super easy. I configure two subscription products, one for GPT-3.5 turbo and another for GPT-4. After the user pays, I update their `hasPaid` and `datePaid` fields in the database.
-
-[Lightning / Bolt11](https://github.com/bitcoinjs/bolt11) is a great library for working with Bitcoin Lightning payments. I used it to generate a Lightning invoice for the user to pay. After the user pays, I update their `LnPayment.status` field in the database (see `src/server/ln.ts`), which allows the user to perform a generation on the front-end. I personally accept the payments to my [Alby](https://getalby.com/) lightning address.
-
-I also implemented a cron job to send an email to the user to notify them 2 weeks before their subscription ends. I used [SendGrid](https://sendgrid.com/) for the email service.
-
-If you have any other questions, feel free to reach out to me on [twitter](https://twitter.com/hot_town)
+For the prompts and generation logic, see `src/server/actions.ts`. For the data model, see
+`schema.prisma`.

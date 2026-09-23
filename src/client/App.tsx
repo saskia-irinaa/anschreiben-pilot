@@ -10,24 +10,18 @@ import { useLocation, Outlet } from 'react-router-dom';
 export const TextareaContext = createContext({
   textareaState: '',
   setTextareaState: (value: string) => {},
-  isLnPayPending: false,
-  setIsLnPayPending: (value: boolean) => {},
 });
 
 export default function App() {
   const [tooltip, setTooltip] = useState<{ x: string; y: string; text: string } | null>(null);
   const [currentText, setCurrentText] = useState<string | null>(null);
   const [textareaState, setTextareaState] = useState<string>('');
-  const [isLnPayPending, setIsLnPayPending] = useState<boolean>(false);
 
   const location = useLocation();
 
   const { data: user } = useAuth();
 
   useEffect(() => {
-    if (isLnPayPending) {
-      return;
-    }
     if (!location.pathname.includes('cover-letter')) {
       setTooltip(null);
     }
@@ -65,7 +59,7 @@ export default function App() {
       document.removeEventListener('mouseup', handleMouseUp);
       document.removeEventListener('mousedown', handleMouseDown);
     };
-  }, [tooltip, location, isLnPayPending]);
+  }, [tooltip, location]);
 
   return (
     <ChakraProvider theme={theme}>
@@ -73,8 +67,6 @@ export default function App() {
         value={{
           textareaState,
           setTextareaState,
-          isLnPayPending,
-          setIsLnPayPending,
         }}
       >
         <Box

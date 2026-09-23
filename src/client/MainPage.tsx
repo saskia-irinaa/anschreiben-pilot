@@ -1,11 +1,10 @@
-import { type User, type LnPayment } from "wasp/entities";
+import { type User } from "wasp/entities";
 import { useAuth } from "wasp/client/auth";
 
 import {
   generateCoverLetter,
   createJob,
   updateCoverLetter,
-  updateLnPayment,
   useQuery,
   getJob,
   getCoverLetterCount,
@@ -44,9 +43,6 @@ import { useState, useEffect, useRef } from 'react';
 import { ChangeEvent } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
-import LnPaymentModal from './components/LnPaymentModal';
-import { fetchLightningInvoice } from './lightningUtils';
-import type { LightningInvoice } from './lightningUtils';
 
 function MainPage() {
   const [isPdfReady, setIsPdfReady] = useState<boolean>(false);
@@ -55,7 +51,6 @@ function MainPage() {
   const [isCompleteCoverLetter, setIsCompleteCoverLetter] = useState<boolean>(true);
   const [sliderValue, setSliderValue] = useState(30);
   const [showTooltip, setShowTooltip] = useState(false);
-  const [lightningInvoice, setLightningInvoice] = useState<LightningInvoice | null>(null);
 
   const { data: user } = useAuth();
 
@@ -82,7 +77,6 @@ function MainPage() {
 
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { isOpen: loginIsOpen, onOpen: loginOnOpen, onClose: loginOnClose } = useDisclosure();
-  const { isOpen: lnPaymentIsOpen, onOpen: lnPaymentOnOpen, onClose: lnPaymentOnClose } = useDisclosure();
 
   let setLoadingTextTimeout: ReturnType<typeof setTimeout>;
   const loadingTextRef = useRef<HTMLDivElement>(null);
@@ -176,37 +170,6 @@ function MainPage() {
     }
   }
 
-  async function checkIfLnAndPay(user: Omit<User, 'password'>): Promise<LnPayment | null> {
-    try {
-      if (user.isUsingLn && user.credits === 0) {
-        const invoice = await fetchLightningInvoice();
-        let lnPayment: LnPayment;
-        if (invoice) {
-          invoice.status = 'pending';
-          lnPayment = await updateLnPayment(invoice);
-          setLightningInvoice(invoice);
-          lnPaymentOnOpen();
-        } else {
-          throw new Error('fetching lightning invoice failed');
-        }
-  
-        let status = invoice.status;
-        while (status === 'pending') {
-          lnPayment = await updateLnPayment(invoice);
-          status = lnPayment.status;
-          await new Promise((resolve) => setTimeout(resolve, 1000));
-        }
-        if (status !== 'success') {
-          throw new Error('payment failed');
-        }
-        return lnPayment;
-      } 
-    } catch (error) {
-      console.error('Error processing payment, please try again');
-    }
-    return null;
-  }
-
   function checkIfSubPastDueAndRedirect(user: Omit<User, 'password'>) {
     if (user.subscriptionStatus === 'past_due') {
       navigate('/profile')
@@ -228,8 +191,6 @@ function MainPage() {
     }
 
     try {
-      const lnPayment = await checkIfLnAndPay(user);
-
       const isSubscriptionPastDue = checkIfSubPastDueAndRedirect(user);
       if (isSubscriptionPastDue) return;
 
@@ -246,7 +207,6 @@ function MainPage() {
         includeWittyRemark: values.includeWittyRemark,
         temperature: creativityValue,
         gptModel: values.gptModel || 'gpt-4o-mini',
-        lnPayment: lnPayment || undefined,
       };
 
       setLoadingText();
@@ -256,7 +216,7 @@ function MainPage() {
       navigate(`/cover-letter/${coverLetter.id}`);
     } catch (error: any) {
       cancelLoadingText();
-      alert(`${error?.message ?? 'Something went wrong, please try again'}`);
+      alert(`${error?.message ?? 'Etwas ist schiefgelaufen, bitte versuche es erneut'}`);
       console.error(error);
     }
   }
@@ -273,13 +233,11 @@ function MainPage() {
     }
 
     try {
-      const lnPayment = await checkIfLnAndPay(user);
-
       const isSubscriptionPastDue = checkIfSubPastDueAndRedirect(user);
       if (isSubscriptionPastDue) return;
 
       if (!job) {
-        throw new Error('Job not found');
+        throw new Error('Bewerbung nicht gefunden');
       }
 
       const creativityValue = convertToSliderValue(sliderValue);
@@ -291,7 +249,6 @@ function MainPage() {
         temperature: creativityValue,
         includeWittyRemark: values.includeWittyRemark,
         gptModel: values.gptModel || 'gpt-4o-mini',
-        lnPayment: lnPayment || undefined,
       };
 
       setLoadingText();
@@ -301,7 +258,7 @@ function MainPage() {
       navigate(`/cover-letter/${coverLetterId}`);
     } catch (error: any) {
       cancelLoadingText();
-      alert(`${error?.message ?? 'Something went wrong, please try again'}`);
+      alert(`${error?.message ?? 'Etwas ist schiefgelaufen, bitte versuche es erneut'}`);
       console.error(error);
     }
   }
@@ -327,13 +284,7 @@ function MainPage() {
 
   function hasUserPaidOrActiveTrial(): Boolean {
     if (user) {
-      if (user.isUsingLn) {
-        if (user.credits < 3 && user.credits > 0) {
-          onOpen();
-        }
-        return true;
-      }
-      if (!user.hasPaid && !user.isUsingLn && user.credits > 0) {
+      if (!user.hasPaid && user.credits > 0) {
         if (user.credits < 3) {
           onOpen();
         }
@@ -637,10 +588,8 @@ function MainPage() {
         onOpen={onOpen}
         onClose={onClose}
         credits={user?.credits || 0}
-        isUsingLn={user?.isUsingLn || false}
       />
       <LoginToBegin isOpen={loginIsOpen} onOpen={loginOnOpen} onClose={loginOnClose} />
-      <LnPaymentModal isOpen={lnPaymentIsOpen} onClose={lnPaymentOnClose} lightningInvoice={lightningInvoice} />
     </>
   );
 }

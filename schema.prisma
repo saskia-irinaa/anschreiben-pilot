@@ -12,7 +12,6 @@ model User {
   username             String        @unique
   email                String?
   hasPaid              Boolean       @default(false)
-  isUsingLn            Boolean       @default(false)
   gptModel             String        @default("gpt-4o-mini")
   datePaid             DateTime?
   stripeId             String?
@@ -22,41 +21,6 @@ model User {
   credits              Int           @default(3)
   letters              CoverLetter[]
   jobs                 Job[]
-  lnData               LnData?
-  lnPayments           LnPayment[]
-}
-
-model LnData {
-  id        String    @id @default(uuid())
-  user      User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId    Int?      @unique
-  loginUrl  String?   @unique
-  k1Hash    String    @unique
-  token     String?
-  createdAt DateTime  @default(now())
-  updatedAt DateTime? @updatedAt
-}
-
-// type LightningInvoice = {
-//   status: string;
-//   successAction: {
-//     tag: string;
-//     message: string;
-//   };
-//   verify: string;
-//   routes: any[]; // You can replace this with a more specific type if needed
-//   pr: string;
-// };
-
-model LnPayment {
-  pr        String    @id @unique
-  status    String
-  settled   Boolean   @default(false)
-  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId    Int
-  amount    Int?
-  createdAt DateTime  @default(now())
-  updatedAt DateTime? @updatedAt
 }
 
 model CoverLetter {
