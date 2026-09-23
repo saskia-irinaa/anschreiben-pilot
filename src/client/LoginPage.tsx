@@ -64,7 +64,7 @@ export default function Login() {
       if (!lnUserInfo?.token || !user) {
         clearInterval(interval);
         setLnIsLoading(false);
-        alert('Login timed out. Please try again.');
+        alert('Die Anmeldung hat zu lange gedauert. Bitte versuche es erneut.');
       }
     }, 60000);
   };
@@ -77,11 +77,17 @@ export default function Login() {
         ) : (
           <VStack>
             <a href={signInUrl}>
-              <Button leftIcon={<AiOutlineGoogle />}>Google Sign In</Button>
+              <Button leftIcon={<AiOutlineGoogle />}>Mit Google anmelden</Button>
             </a>
+            {/* TODO(Saskia): Lightning-Login ist vinces persönliches Bitcoin/Alby-Setup —
+                für den deutschen Markt vermutlich eher verwirrend als nützlich. Text übersetzt,
+                aber ganz rausnehmen (hier + LnLoginModal, LnPaymentModal, lightningUtils.ts,
+                die Ln*-Actions in main.wasp, LnData/LnPayment im schema.prisma) ist wahrscheinlich
+                die richtige Vereinfachung — das aber nicht ungefragt gemacht, weil es Schema und
+                mehrere Dateien anfasst. */}
             <Button isLoading={lnIsLoading} onClick={handleWalletClick} leftIcon={<BsCurrencyBitcoin />}>
               {' '}
-              Lightning Sign In
+              Mit Lightning anmelden
             </Button>
           </VStack>
         )}

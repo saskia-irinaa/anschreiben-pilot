@@ -2,19 +2,19 @@ app CoverLetterGPT {
   wasp: {
     version: "^0.15.0"
   },
-  title: "CoverLetterGPT",
+  title: "Anschreiben Pilot",
   head: [
         "<meta charset=\"UTF-8\" />",
         "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />",
-        "<meta name=\"description\" content=\"Create Unique Cover Letters Based on Your Skills using GPT. Supercharge Your Job Search with Cover Letter GPT.\" />",
-        "<meta name=\"keywords\" content=\"cover letter, gpt, ai, job search, resume\" />",
-        "<meta name=\"author\" content=\"CoverLetterGPT\" />",
+        "<meta name=\"description\" content=\"Erstelle in Minuten ein individuelles Bewerbungsschreiben nach deutschen Standards (DIN 5008) mit KI. Anschreiben Pilot passt dein Anschreiben automatisch an die Stellenanzeige an.\" />",
+        "<meta name=\"keywords\" content=\"anschreiben, bewerbungsschreiben, ki, bewerbung, lebenslauf, jobsuche\" />",
+        "<meta name=\"author\" content=\"Anschreiben Pilot\" />",
         "<meta property=\"og:type\" content=\"website\" />",
-        "<meta property=\"og:url\" content=\"https://CoverLetterGPT.xyz\" />",
-        "<meta property=\"og:title\" content=\"CoverLetterGPT\" />",
-        "<meta property=\"og:description\" content=\"Create Unique Cover Letters Based on Your Skills using GPT. Supercharge Your Job Search with Cover Letter GPT.\" />",
-        "<meta property=\"og:image\" content=\"https://CoverLetterGPT.xyz/homepage.png\" />",
-        "<meta name=\"twitter:image\" content=\"https://CoverLetterGPT.xyz/homepage.png\" />",
+        "<meta property=\"og:url\" content=\"https://anschreibenpilot.de\" />",
+        "<meta property=\"og:title\" content=\"Anschreiben Pilot\" />",
+        "<meta property=\"og:description\" content=\"Erstelle in Minuten ein individuelles Bewerbungsschreiben nach deutschen Standards (DIN 5008) mit KI.\" />",
+        "<meta property=\"og:image\" content=\"https://anschreibenpilot.de/homepage.png\" />",
+        "<meta name=\"twitter:image\" content=\"https://anschreibenpilot.de/homepage.png\" />",
         "<meta name=\"twitter:image:width\" content=\"800\" />",
         "<meta name=\"twitter:image:height\" content=\"400\" />",
         "<meta name=\"twitter:card\" content=\"summary_large_image\" />",
@@ -37,8 +37,10 @@ app CoverLetterGPT {
   emailSender: {
     provider: SendGrid,
     defaultFrom: {
-      name: "CoverLetterGPT",
-      email: "vince@wasp.sh",
+      name: "Anschreiben Pilot",
+      // TODO(Saskia): needs a real sending address on a domain she controls before launch —
+      // placeholder only, do not send real email from this address.
+      email: "noreply@anschreibenpilot.de",
     },
   },
 }

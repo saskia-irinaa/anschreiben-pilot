@@ -22,18 +22,43 @@ const stripe = new Stripe(process.env.STRIPE_KEY!, {
 
 const DOMAIN = process.env.WASP_WEB_CLIENT_URL || 'http://localhost:3000';
 
+// Anschreiben Pilot differentiation (see brain/projects/micro-saas-dach-spec-cover-letter-cv.md):
+// correct German business-letter conventions (DIN 5008) is the actual product wedge against
+// JobStep/Rezi/MakeMyCV/etc, not just "AI writes it for you" — so this instruction is
+// unconditional, not an afterthought bolted onto the original English-first prompt.
+const DIN_5008_INSTRUCTIONS = `If the job description (and therefore the cover letter) is in German, strictly follow German
+business-letter conventions (DIN 5008), not American cover-letter conventions:
+- Formal salutation: "Sehr geehrte Damen und Herren," if no contact person is named in the
+  job description, or "Sehr geehrte/r Frau/Herr [Nachname]," if one is.
+- A short, bold "Betreff" (subject) line before the salutation, naming the position applied
+  for (e.g. "Bewerbung als [Jobtitel]").
+- Formal closing: "Mit freundlichen Grüßen" followed by the applicant's name on its own line
+  — never an American-style sign-off like "Best," or "Sincerely,".
+- Formal "Sie" register throughout, not "du".
+- No emoji, no exclamation marks used for enthusiasm, no American-style self-promotion
+  ("I am the perfect candidate!") — German cover letters are more measured and rely on
+  concrete, specific matches between the applicant's experience and the role.
+For any other language, write naturally in that language's own standard cover-letter
+conventions instead of applying the above.`;
+
 const gptConfig = {
   completeCoverLetter: `You are a cover letter generator.
 You will be given a job description along with the job applicant's resume.
 You will write a cover letter for the applicant that matches their past experiences from the resume with the job description. Write the cover letter in the same language as the job description provided!
 Rather than simply outlining the applicant's past experiences, you will give more detail and explain how those experiences will help the applicant succeed in the new job.
-You will write the cover letter in a modern, professional style without being too formal, as a modern employee might do naturally.`,
+You will write the cover letter in a modern, professional style without being too formal for the language it's written in.
+${DIN_5008_INSTRUCTIONS}`,
   coverLetterWithAWittyRemark: `You are a cover letter generator.
 You will be given a job description along with the job applicant's resume.
 You will write a cover letter for the applicant that matches their past experiences from the resume with the job description. Write the cover letter in the same language as the job description provided!
 Rather than simply outlining the applicant's past experiences, you will give more detail and explain how those experiences will help the applicant succeed in the new job.
 You will write the cover letter in a modern, relaxed style, as a modern employee might do naturally.
-Include a job related joke at the end of the cover letter.`,
+${DIN_5008_INSTRUCTIONS}
+If the letter is in German: do NOT include a joke — a joke inside a formal Sie-register
+German Bewerbungsschreiben reads as a mistake, not as personality, and undermines the DIN
+5008 formality above. Instead, close the final paragraph before the Grußformel with one
+warm, genuine sentence about looking forward to the role. If the letter is in any other
+language, include a light, job-related joke at the end as originally intended.`,
   ideasForCoverLetter:
     "You are a cover letter idea generator. You will be given a job description along with the job applicant's resume. You will generate a bullet point list of ideas for the applicant to use in their cover letter. ",
 };
